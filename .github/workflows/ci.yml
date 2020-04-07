@@ -1,0 +1,40 @@
+name: ci
+
+on: push
+
+jobs:
+    ci:
+        name: ci
+        runs-on: ubuntu-18.04
+        steps:
+            - name: checkout
+              uses: actions/checkout@v1
+            - name: setup node
+              uses: actions/setup-node@v1
+              with:
+                  registry-url: "https://npm.pkg.github.com"
+                  node-version: 12
+            - name: install dependencies
+              run: npm ci
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+            - name: commitlint
+              run: npx commitlint -f origin/master -V
+            - name: code style
+              run: npm run style:check
+            - name: lint
+              run: npm run lint:check && npm run eslint
+            - name: build
+              run: npm run build
+            - name: test
+              run: npm test
+            - name: update .npmrc
+              run: echo "//npm.pkg.github.com/:_authToken=$MY_GITHUB_TOKEN" >> .npmrc
+              env:
+                  MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+            - name: release
+              if: github.ref == 'refs/heads/master'
+              env:
+                  GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+                  NPM_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+              run: npx semantic-release

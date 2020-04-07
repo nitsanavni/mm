@@ -1,48 +1,86 @@
 {
-	"name": "mm",
-	"version": "0.0.0",
-	"license": "MIT",
-	"bin": "cli.js",
-	"engines": {
-		"node": ">=8"
-	},
-	"scripts": {
-		"test": "xo && ava"
-	},
-	"files": [
-		"cli.js",
-		"ui.js"
-	],
-	"dependencies": {
-		"import-jsx": "^4.0.0",
-		"ink": "^2.7.1",
-		"max-listeners-exceeded-warning": "0.0.1",
-		"meow": "^6.1.0",
-		"prop-types": "^15.7.2",
-		"react": "^16.13.1"
-	},
-	"devDependencies": {
-		"@babel/preset-react": "^7.9.4",
-		"@babel/register": "^7.9.0",
-		"ava": "^3.7.0",
-		"chalk": "^4.0.0",
-		"eslint-config-xo-react": "^0.23.0",
-		"eslint-plugin-react": "^7.19.0",
-		"eslint-plugin-react-hooks": "^3.0.0",
-		"ink-testing-library": "^1.0.3",
-		"xo": "^0.29.1"
-	},
-	"ava": {
-		"require": [
-			"@babel/register"
-		]
-	},
-	"babel": {
-		"presets": [
-			"@babel/preset-react"
-		]
-	},
-	"xo": {
-		"extends": "xo-react"
-	}
+    "name": "mm",
+    "version": "0.0.0-semanticlaly-released",
+    "description": "papaya package template",
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com"
+    },
+    "files": [
+        "dist/src/"
+    ],
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
+    "scripts": {
+        "hack": "ya run hack",
+        "build": "tsc",
+        "build:watch": "tsc -w --preserveWatchOutput",
+        "test": "ava",
+        "test:watch": "ava -w",
+        "style:check": "prettier --check . || (c=$?; echo \"\ntry running 'npm run style' to fix the issues\"; (exit $c))",
+        "style": "prettier --write .",
+        "lint": "tslint --fix -p .",
+        "lint:check": "tslint -p .",
+        "eslint": "eslint --ext ts .",
+        "preinstall": "git config --local include.path ../.gitconfig"
+    },
+    "ya": {
+        "recipes": {
+            "hack": [
+                "build:watch",
+                "test:watch"
+            ]
+        },
+        "ingredients": {
+            "build:watch": {
+                "color": "green",
+                "pwd": ".",
+                "cmd": "npm run build:watch"
+            },
+            "test:watch": {
+                "color": "magenta",
+                "pwd": ".",
+                "cmd": "npm run test:watch"
+            }
+        }
+    },
+    "prettier": "@papayaglobal/prettier-config",
+    "ava": {
+        "files": [
+            "dist/test/**/*"
+        ],
+        "ignoredByWatcher": [
+            "**/*.ts"
+        ]
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^8.3.5",
+        "@commitlint/config-angular": "^8.3.4",
+        "@papayaglobal/prettier-config": "1.0.0",
+        "@papayaglobal/ya": "^1.0.5",
+        "@typescript-eslint/eslint-plugin": "^2.27.0",
+        "@typescript-eslint/parser": "^2.27.0",
+        "ava": "^3.6.0",
+        "eslint": "^6.8.0",
+        "husky": "^4.2.3",
+        "lint-staged": "^10.1.2",
+        "prettier": "2.0.4",
+        "pretty-quick": "2.0.1",
+        "semantic-release": "^17.0.4",
+        "tslint": "^6.1.1",
+        "typescript": "^3.8.3"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged",
+            "pre-push": "npm run lint:check && npm run build && npm test",
+            "commit-msg": "commitlint --verbose -e"
+        }
+    },
+    "lint-staged": {
+        "*.ts": [
+            "eslint --fix --ext ts",
+            "tslint --fix"
+        ],
+        "*.{ts,json}": "prettier --write"
+    }
 }
