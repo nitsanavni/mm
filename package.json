@@ -1,0 +1,47 @@
+{
+	"name": "mm",
+	"version": "0.0.0",
+	"license": "MIT",
+	"bin": "cli.js",
+	"engines": {
+		"node": ">=8"
+	},
+	"scripts": {
+		"test": "xo && ava"
+	},
+	"files": [
+		"cli.js",
+		"ui.js"
+	],
+	"dependencies": {
+		"import-jsx": "^4.0.0",
+		"ink": "^2.7.1",
+		"meow": "^6.1.0",
+		"prop-types": "^15.7.2",
+		"react": "^16.13.1"
+	},
+	"devDependencies": {
+		"@babel/preset-react": "^7.9.4",
+		"@babel/register": "^7.9.0",
+		"ava": "^3.7.0",
+		"chalk": "^4.0.0",
+		"eslint-config-xo-react": "^0.23.0",
+		"eslint-plugin-react": "^7.19.0",
+		"eslint-plugin-react-hooks": "^3.0.0",
+		"ink-testing-library": "^1.0.3",
+		"xo": "^0.29.1"
+	},
+	"ava": {
+		"require": [
+			"@babel/register"
+		]
+	},
+	"babel": {
+		"presets": [
+			"@babel/preset-react"
+		]
+	},
+	"xo": {
+		"extends": "xo-react"
+	}
+}
