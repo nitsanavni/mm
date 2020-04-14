@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 # Usage:
 # - Start new mindmap:
 #   `ruby ttymindmap.rb`
@@ -67,12 +69,13 @@ end
 module PrettyPrint
   def self.tree(subtree, current, indent = 0)
     print ' ' * indent
-    print subtree == current ? '> ' : '- '
+    print subtree == current ? '>' : '-'
+    print subtree.open ? '   ' : (subtree.children.any? ? (subtree.children.length() < 10 ? '+' + subtree.children.length().to_s + ' ' : '+  ') : '   ')
     print subtree.name + "\n"
 
     return unless subtree.open
     subtree.children.each do |child|
-      tree(child, current, indent + 2)
+      tree(child, current, indent + 4)
     end
   end
 end
