@@ -1,16 +1,16 @@
 import * as React from "react";
 import test from "ava";
 import { render } from "ink-testing-library";
-import { App } from "../src/ui";
+import { MirrorInput } from "../src/mirror-input.component";
 
 test("init - empty", (t) => {
-	const { lastFrame } = render(<App />);
+	const { lastFrame } = render(<MirrorInput />);
 
 	t.is(lastFrame(), "");
 });
 
 test("app mirrors input", (t) => {
-	const { stdin, lastFrame } = render(<App />);
+	const { stdin, lastFrame } = render(<MirrorInput />);
 
 	stdin.write("hello\n\r");
 
