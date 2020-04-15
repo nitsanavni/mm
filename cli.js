@@ -20,7 +20,5 @@ const cli = meow(`
 	  $ mm --name=Jane
 	  Hello, Jane
 `);
-process.setMaxListeners(0);
-process.on("uncaughtException", () => {});
-process.on("warning", (e) => console.warn(e.stack));
+
 render(React.createElement(ui, cli.flags));

@@ -54,6 +54,7 @@
         ]
     },
     "dependencies": {
+        "@types/react": "^16.9.34",
         "import-jsx": "^4.0.0",
         "ink": "^2.7.1",
         "max-listeners-exceeded-warning": "0.0.1",
