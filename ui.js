@@ -1,20 +1,19 @@
-'use strict';
-const React = require('react');
-const PropTypes = require('prop-types');
-const {Text, Color} = require('ink');
+"use strict";
+const React = require("react");
+const PropTypes = require("prop-types");
+const { Text, Color, StdinContext } = require("ink");
+const importJsx = require("import-jsx");
 
-const App = ({name}) => (
-	<Text>
-		Hello, <Color green>{name}</Color>
-	</Text>
-);
+const Robot = importJsx("./useinput");
+
+const App = () => <Robot />;
 
 App.propTypes = {
-	name: PropTypes.string
+	name: PropTypes.string,
 };
 
 App.defaultProps = {
-	name: 'Stranger'
+	name: "Stranger",
 };
 
 module.exports = App;
