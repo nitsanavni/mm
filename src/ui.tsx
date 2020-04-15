@@ -6,9 +6,9 @@ import { MirrorInput } from "./mirror-input.component";
 export const App = () => <MirrorInput />;
 
 App.propTypes = {
-    name: PropTypes.string
+	name: PropTypes.string,
 };
 
 App.defaultProps = {
-    name: "Stranger"
+	name: "Stranger",
 };
