@@ -1,13 +1,11 @@
 {
     "name": "mm",
     "version": "0.0.0-semanticlaly-released",
-    "description": "papaya package template",
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com"
-    },
+    "description": "mindmap in the command line",
     "files": [
         "dist/src/"
     ],
+    "bin": "dist/src/cli.js",
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
     "scripts": {
@@ -50,7 +48,17 @@
         ],
         "ignoredByWatcher": [
             "**/*.ts"
-        ]
+        ],
+        "require": [
+            "@babel/register"]
+    },
+    "dependencies": {
+        "import-jsx": "^4.0.0",
+         "ink": "^2.7.1",
+         "max-listeners-exceeded-warning": "0.0.1",
+         "meow": "^6.1.0",
+         "prop-types": "^15.7.2",
+         "react": "^16.13.1"
     },
     "devDependencies": {
         "@commitlint/cli": "^8.3.5",
@@ -59,7 +67,6 @@
         "@papayaglobal/ya": "^1.0.5",
         "@typescript-eslint/eslint-plugin": "^2.27.0",
         "@typescript-eslint/parser": "^2.27.0",
-        "ava": "^3.6.0",
         "eslint": "^6.8.0",
         "husky": "^4.2.3",
         "lint-staged": "^10.1.2",
@@ -67,7 +74,16 @@
         "pretty-quick": "2.0.1",
         "semantic-release": "^17.0.4",
         "tslint": "^6.1.1",
-        "typescript": "^3.8.3"
+        "typescript": "^3.8.3",
+        "@babel/preset-react": "^7.9.4",
+         "@babel/register": "^7.9.0",
+         "ava": "^3.7.0",
+         "chalk": "^4.0.0",
+         "eslint-config-xo-react": "^0.23.0",
+         "eslint-plugin-react": "^7.19.0",
+         "eslint-plugin-react-hooks": "^3.0.0",
+         "ink-testing-library": "^1.0.3",
+         "xo": "^0.29.1"
     },
     "husky": {
         "hooks": {
@@ -82,5 +98,9 @@
             "tslint --fix"
         ],
         "*.{ts,json}": "prettier --write"
-    }
+    },
+    "babel": {
+        "presets": [
+            "@babel/preset-react"
+        ]}
 }
