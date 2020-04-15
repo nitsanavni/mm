@@ -97,7 +97,7 @@
 	},
 	"lint-staged": {
 		"*.ts*": [
-			"eslint --fix --ext ts",
+			"eslint --fix --ext ts --ext tsx",
 			"tslint --fix"
 		],
 		"*.{ts*,json}": "prettier --write"

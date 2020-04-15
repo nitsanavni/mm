@@ -8,7 +8,14 @@ import InkTextInput from "ink-text-input";
 const Input = ({ focus }: { focus: boolean }) => {
 	const [v, setV] = useState("");
 
-	return <InkTextInput focus={focus} value={v} onChange={setV} />;
+	return (
+		<InkTextInput
+			highlightPastedText={true}
+			focus={focus}
+			value={v}
+			onChange={setV}
+		/>
+	);
 };
 
 const Intercept = ({
