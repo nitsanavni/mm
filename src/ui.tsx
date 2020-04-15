@@ -1,9 +1,9 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 
-import { Robot } from "./useinput";
+import { MirrorInput } from "./mirror-input.component";
 
-export const App = () => <Robot />;
+export const App = () => <MirrorInput />;
 
 App.propTypes = {
     name: PropTypes.string
