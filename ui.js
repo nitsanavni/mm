@@ -9,11 +9,11 @@ const Robot = importJsx("./useinput");
 const App = () => <Robot />;
 
 App.propTypes = {
-	name: PropTypes.string,
+    name: PropTypes.string
 };
 
 App.defaultProps = {
-	name: "Stranger",
+    name: "Stranger"
 };
 
 module.exports = App;

@@ -50,15 +50,16 @@
             "**/*.ts"
         ],
         "require": [
-            "@babel/register"]
+            "@babel/register"
+        ]
     },
     "dependencies": {
         "import-jsx": "^4.0.0",
-         "ink": "^2.7.1",
-         "max-listeners-exceeded-warning": "0.0.1",
-         "meow": "^6.1.0",
-         "prop-types": "^15.7.2",
-         "react": "^16.13.1"
+        "ink": "^2.7.1",
+        "max-listeners-exceeded-warning": "0.0.1",
+        "meow": "^6.1.0",
+        "prop-types": "^15.7.2",
+        "react": "^16.13.1"
     },
     "devDependencies": {
         "@commitlint/cli": "^8.3.5",
@@ -76,14 +77,14 @@
         "tslint": "^6.1.1",
         "typescript": "^3.8.3",
         "@babel/preset-react": "^7.9.4",
-         "@babel/register": "^7.9.0",
-         "ava": "^3.7.0",
-         "chalk": "^4.0.0",
-         "eslint-config-xo-react": "^0.23.0",
-         "eslint-plugin-react": "^7.19.0",
-         "eslint-plugin-react-hooks": "^3.0.0",
-         "ink-testing-library": "^1.0.3",
-         "xo": "^0.29.1"
+        "@babel/register": "^7.9.0",
+        "ava": "^3.7.0",
+        "chalk": "^4.0.0",
+        "eslint-config-xo-react": "^0.23.0",
+        "eslint-plugin-react": "^7.19.0",
+        "eslint-plugin-react-hooks": "^3.0.0",
+        "ink-testing-library": "^1.0.3",
+        "xo": "^0.29.1"
     },
     "husky": {
         "hooks": {
@@ -102,5 +103,6 @@
     "babel": {
         "presets": [
             "@babel/preset-react"
-        ]}
+        ]
+    }
 }
