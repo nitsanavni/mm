@@ -62,28 +62,30 @@
         "react": "^16.13.1"
     },
     "devDependencies": {
+        "@babel/preset-react": "^7.9.4",
+        "@babel/register": "^7.9.0",
         "@commitlint/cli": "^8.3.5",
         "@commitlint/config-angular": "^8.3.4",
         "@papayaglobal/prettier-config": "1.0.0",
         "@papayaglobal/ya": "^1.0.5",
         "@typescript-eslint/eslint-plugin": "^2.27.0",
         "@typescript-eslint/parser": "^2.27.0",
+        "ava": "^3.7.0",
+        "chalk": "^4.0.0",
+        "commitizen": "^4.0.4",
+        "cz-conventional-changelog": "^3.1.0",
         "eslint": "^6.8.0",
+        "eslint-config-xo-react": "^0.23.0",
+        "eslint-plugin-react": "^7.19.0",
+        "eslint-plugin-react-hooks": "^3.0.0",
         "husky": "^4.2.3",
+        "ink-testing-library": "^1.0.3",
         "lint-staged": "^10.1.2",
         "prettier": "2.0.4",
         "pretty-quick": "2.0.1",
         "semantic-release": "^17.0.4",
         "tslint": "^6.1.1",
         "typescript": "^3.8.3",
-        "@babel/preset-react": "^7.9.4",
-        "@babel/register": "^7.9.0",
-        "ava": "^3.7.0",
-        "chalk": "^4.0.0",
-        "eslint-config-xo-react": "^0.23.0",
-        "eslint-plugin-react": "^7.19.0",
-        "eslint-plugin-react-hooks": "^3.0.0",
-        "ink-testing-library": "^1.0.3",
         "xo": "^0.29.1"
     },
     "husky": {
@@ -104,5 +106,10 @@
         "presets": [
             "@babel/preset-react"
         ]
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
     }
 }
