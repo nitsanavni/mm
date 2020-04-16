@@ -53,7 +53,7 @@ const Mediate = () => {
 	);
 };
 
-export const App = () => <Move h={5} w={5} />;
+export const App = () => <Move h={7} w={12} />;
 
 export const App2 = () => (
 	<Box height={20} width="100%" flexDirection="column" justifyContent="center">
