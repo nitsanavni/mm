@@ -55,15 +55,14 @@
 	"dependencies": {
 		"@types/lodash": "^4.14.149",
 		"@types/react": "^16.9.34",
-		"import-jsx": "^4.0.0",
 		"ink": "^2.7.1",
 		"ink-text-input": "^3.2.2",
 		"lodash": "^4.17.15",
-		"max-listeners-exceeded-warning": "0.0.1",
 		"meow": "^6.1.0",
 		"react": "^16.13.1"
 	},
 	"devDependencies": {
+		"@babel/core": "^7.9.0",
 		"@babel/preset-react": "^7.9.4",
 		"@babel/register": "^7.9.0",
 		"@commitlint/cli": "^8.3.5",

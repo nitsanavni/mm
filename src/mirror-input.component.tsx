@@ -7,16 +7,14 @@ export const MirrorInput = () => {
 	const [takeInput, setTakeInput] = useState(false);
 
 	useEffect(() => {
-		setTakeInput(true);
+		if (!takeInput) {
+			setTakeInput(true);
+		}
 
 		return () => setTakeInput(false);
-	});
+	}, []);
 
-	useInput((input) => {
-		if (takeInput) {
-			setState(input);
-		}
-	});
+	useInput((input) => takeInput && setState(input));
 
 	return <Text>{state}</Text>;
 };

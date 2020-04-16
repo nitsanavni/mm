@@ -11,7 +11,7 @@ import { MirrorInput } from "./mirror-input.component";
 const noop = () => undefined;
 
 export const Input = (props: Omit<TextInputProps, "onSubmit">) => (
-	<TextInput {...props} highlightPastedText={true} onSubmit={noop} />
+	<TextInput {...props} highlightPastedText={false} onSubmit={noop} />
 );
 
 const Intercept = ({
