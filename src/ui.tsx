@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { Box, useInput } from "ink";
+import { Move } from "./move.component";
 
 import {
 	UncontrolledTextInput as TextInput,
@@ -53,7 +53,9 @@ const Mediate = () => {
 	);
 };
 
-export const App = () => (
+export const App = () => <Move h={5} w={5} />;
+
+export const App2 = () => (
 	<Box height={20} width="100%" flexDirection="column" justifyContent="center">
 		<Box margin={0} flexDirection="row" justifyContent="center">
 			<Box margin={0} justifyContent="center">
@@ -64,10 +66,10 @@ export const App = () => (
 	</Box>
 );
 
-App.propTypes = {
-	name: PropTypes.string,
-};
+// App.propTypes = {
+// 	name: PropTypes.string,
+// };
 
-App.defaultProps = {
-	name: "Stranger",
-};
+// App.defaultProps = {
+// 	name: "Stranger",
+// };

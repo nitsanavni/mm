@@ -6,26 +6,32 @@ import chalk from "chalk";
 
 import { MirrorInput } from "../src/mirror-input.component";
 import { Input } from "../src/ui";
+import { tick } from "../src/tick";
+import { sleep } from "../src/sleep";
 
 const CURSOR = chalk.inverse(" ");
 
-test("input", (t) => {
+test.serial("input", async (t) => {
 	const { lastFrame, stdin } = render(<Input focus={true} />);
 
+	await sleep(10);
+
 	t.is(lastFrame(), CURSOR);
+
+	await tick();
 
 	stdin.write("X");
 
 	t.is(lastFrame(), `X${CURSOR}`);
 });
 
-test("init - empty", (t) => {
+test.serial("init - empty", (t) => {
 	const { lastFrame } = render(<MirrorInput />);
 
 	t.is(lastFrame(), "");
 });
 
-test("app mirrors input", (t) => {
+test.serial("app mirrors input", (t) => {
 	const { stdin, lastFrame } = render(<MirrorInput />);
 
 	t.is(lastFrame(), "");
