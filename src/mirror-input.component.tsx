@@ -1,20 +1,22 @@
 import * as React from "react";
-import { useState } from "react";
-import { useInput, useStdin, Text } from "ink";
+import { useState, useEffect } from "react";
+import { Text, useInput } from "ink";
 
 export const MirrorInput = () => {
-	const [input, setInput] = useState("");
+	const [state, setState] = useState("");
+	const [takeInput, setTakeInput] = useState(false);
 
-	const { stdin, isRawModeSupported } = useStdin();
+	useEffect(() => {
+		setTakeInput(true);
 
-	if (isRawModeSupported) {
-		useInput(setInput);
-	} else {
-		stdin.on("data", (d) => {
-			stdin.removeAllListeners("data");
-			setInput(d.toString());
-		});
-	}
+		return () => setTakeInput(false);
+	});
 
-	return <Text>{input}</Text>;
+	useInput((input) => {
+		if (takeInput) {
+			setState(input);
+		}
+	});
+
+	return <Text>{state}</Text>;
 };

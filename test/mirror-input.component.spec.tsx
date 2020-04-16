@@ -1,7 +1,23 @@
-import * as React from "react";
 import test from "ava";
 import { render } from "ink-testing-library";
+
+import * as React from "react";
+import chalk from "chalk";
+
 import { MirrorInput } from "../src/mirror-input.component";
+import { Input } from "../src/ui";
+
+const CURSOR = chalk.inverse(" ");
+
+test("input", (t) => {
+	const { lastFrame, stdin } = render(<Input focus={true} />);
+
+	t.is(lastFrame(), CURSOR);
+
+	stdin.write("X");
+
+	t.is(lastFrame(), `X${CURSOR}`);
+});
 
 test("init - empty", (t) => {
 	const { lastFrame } = render(<MirrorInput />);
@@ -12,10 +28,9 @@ test("init - empty", (t) => {
 test("app mirrors input", (t) => {
 	const { stdin, lastFrame } = render(<MirrorInput />);
 
-	stdin.write("hello\n\r");
+	t.is(lastFrame(), "");
 
-	// how to trigger a rerender of the same element tree after stdin.write()?
-	// rerender(??)
+	stdin.write("hello");
 
-	t.is(lastFrame(), "hello"); // of course, fails
+	t.is(lastFrame(), "hello");
 });

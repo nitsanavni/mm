@@ -1,22 +1,18 @@
-import * as React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Box, useInput } from "ink";
 
-import InkTextInput from "ink-text-input";
+import {
+	UncontrolledTextInput as TextInput,
+	InkUncontrolledTextInputProps as TextInputProps,
+} from "ink-text-input";
+import { MirrorInput } from "./mirror-input.component";
 
-const Input = ({ focus }: { focus: boolean }) => {
-	const [v, setV] = useState("");
+const noop = () => undefined;
 
-	return (
-		<InkTextInput
-			highlightPastedText={true}
-			focus={focus}
-			value={v}
-			onChange={setV}
-		/>
-	);
-};
+export const Input = (props: Omit<TextInputProps, "onSubmit">) => (
+	<TextInput {...props} highlightPastedText={true} onSubmit={noop} />
+);
 
 const Intercept = ({
 	down,
@@ -63,6 +59,7 @@ export const App = () => (
 			<Box margin={0} justifyContent="center">
 				<Mediate />
 			</Box>
+			<MirrorInput />
 		</Box>
 	</Box>
 );
