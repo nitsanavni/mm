@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Box, useInput } from "ink";
-import { Move } from "./move.component";
 
 import {
 	UncontrolledTextInput as TextInput,
 	InkUncontrolledTextInputProps as TextInputProps,
 } from "ink-text-input";
 import { MirrorInput } from "./mirror-input.component";
+import { Outline } from "./outline.component";
 
 const noop = () => undefined;
 
@@ -53,7 +53,7 @@ const Mediate = () => {
 	);
 };
 
-export const App = () => <Move h={7} w={12} />;
+export const App = () => <Outline />;
 
 export const App2 = () => (
 	<Box height={20} width="100%" flexDirection="column" justifyContent="center">

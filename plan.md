@@ -12,6 +12,7 @@
 # 10k
 
 - outline component
+- permormance issue with our data model?
 - hoc for input
 - publish
 - e2e test
@@ -24,3 +25,7 @@
 - cli options?
 - config
   - key bindings
+- color
+- 'TODO list mode'
+  - chalk strikethrough dim
+- man page as mindmap
