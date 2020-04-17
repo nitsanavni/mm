@@ -2,6 +2,9 @@
 import * as React from "react";
 import { render } from "ink";
 import meow from "meow";
+// const maxListenersExceededWarning = require("max-listeners-exceeded-warning");
+import { EventEmitter } from "events";
+EventEmitter.defaultMaxListeners = 300;
 
 import { App } from "./ui";
 

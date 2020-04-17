@@ -20,8 +20,8 @@ test("makeFixture", (t) => {
 
 	t.is(fixture.root.label, "root", msg);
 	t.is(fixture.root, fixture.focus, msg);
-	t.true(!isEmpty(fixture.root.down), msg);
-	t.is(fixture.root.down!.length, 2, msg);
+	t.true(!isEmpty(fixture.root.children), msg);
+	t.is(fixture.root.children!.length, 2, msg);
 	t.is(keys(fixture.nodes).length, 4, msg);
 	t.is(chain(fixture.nodes).keys().uniq().value().length, 4, msg);
 });
