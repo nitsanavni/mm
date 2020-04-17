@@ -59,7 +59,6 @@
 		"ink-text-input": "^3.2.2",
 		"lodash": "^4.17.15",
 		"max-listeners-exceeded-warning": "0.0.1",
-		"meow": "^6.1.0",
 		"react": "^16.13.1"
 	},
 	"devDependencies": {

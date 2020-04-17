@@ -1,7 +1,6 @@
 import React from "react";
-import { Box, Color, Text } from "ink";
+import { Box, Color } from "ink";
 import InkTextInput from "ink-text-input";
-import chalk from "chalk";
 import { map } from "lodash";
 
 import { OutlineNode, Mode } from "./outline";
@@ -19,7 +18,12 @@ export const OutlineLayout = ({
 	indent?: number;
 	indentStep?: number;
 }) => (
-	<Box flexDirection="row" key={`box ${n.key}`} marginLeft={indent}>
+	<Box
+		flexDirection="row"
+		key={`box ${n.key}`}
+		marginLeft={2}
+		alignItems="center"
+	>
 		<Color bold={n.focused}>
 			<InkTextInput
 				key={`title ${n.key}`}

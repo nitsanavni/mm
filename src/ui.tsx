@@ -53,7 +53,7 @@ const Mediate = () => {
 	);
 };
 
-export const App = () => <Outline indent={2} />;
+export const App = () => <Outline indent={0} />;
 
 export const App2 = () => (
 	<Box height={20} width="100%" flexDirection="column" justifyContent="center">
