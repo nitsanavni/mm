@@ -9,6 +9,11 @@
   - auto-layout mode
   -
 
+# in
+
+- https://www.npmjs.com/package/term-size
+- curves by something similar to boxen - https://www.compart.com/en/unicode/block/U+2500
+
 # 10k
 
 - outline component

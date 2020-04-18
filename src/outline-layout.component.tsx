@@ -1,7 +1,7 @@
 import React from "react";
-import { Box, Color } from "ink";
+import { Box, Color, Text } from "ink";
 import InkTextInput from "ink-text-input";
-import { map } from "lodash";
+import { isEmpty } from "lodash";
 
 import { OutlineNode, Mode } from "./outline";
 
@@ -12,36 +12,56 @@ export const OutlineLayout = ({
 	indent = 0,
 	indentStep = 0,
 }: {
-	n: OutlineNode;
+	n?: OutlineNode;
 	onChange: (value: string) => void;
 	mode: Mode;
 	indent?: number;
 	indentStep?: number;
-}) => (
-	<Box
-		flexDirection="row"
-		key={`box ${n.key}`}
-		marginLeft={2}
-		alignItems="center"
-	>
-		<Color bold={n.focused}>
-			<InkTextInput
-				key={`title ${n.key}`}
-				focus={n.focused && mode === "edit node"}
-				onChange={onChange}
-				value={n.label}
-			/>
-		</Color>
-		<Box flexDirection="column">
-			{map(n.children, (c) => (
-				<OutlineLayout
-					n={c}
-					{...{ onChange, mode, indent }}
-					key={`layout ${c.key}`}
-					indent={indent + indentStep}
-					indentStep={indentStep}
-				/>
-			))}
+}) =>
+	!n ? (
+		<></>
+	) : (
+		<Box
+			flexDirection="row"
+			key={`box ${n.key}`}
+			marginLeft={1}
+			marginRight={1}
+			alignItems="center"
+		>
+			<Color bold={n.focused} yellow={n.focused}>
+				{n.focused ? (
+					<InkTextInput onChange={onChange} value={n.label} />
+				) : (
+					<Text>{isEmpty(n.label) ? "_" : n.label}</Text>
+				)}
+			</Color>
+			<Box flexDirection="column">
+				{(function () {
+					let next = n.firstChild;
+					const acc = [];
+
+					while (next) {
+						acc.push(
+							<Box
+								alignItems="center"
+								marginLeft={1}
+								flexDirection="row"
+								key={`o${next.key}`}
+							>
+								<Text>│</Text>
+								<OutlineLayout
+									n={next}
+									{...{ onChange, mode, indent }}
+									indent={indent + indentStep}
+									indentStep={indentStep}
+								/>
+							</Box>
+						);
+						next = next.nextSiblin;
+					}
+
+					return acc;
+				})()}
+			</Box>
 		</Box>
-	</Box>
-);
+	);

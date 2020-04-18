@@ -9,7 +9,10 @@ export type OutlineNode = {
 	label: string;
 	focused: boolean;
 	parent?: OutlineNode;
-	children?: OutlineNode[];
+	firstChild?: OutlineNode;
+	lastChild?: OutlineNode;
+	nextSiblin?: OutlineNode;
+	previousSiblin?: OutlineNode;
 };
 
 export type Root = Omit<OutlineNode, "parent">;
@@ -25,14 +28,23 @@ export type Outline = {
 
 export type Transform = (o: Outline) => Outline;
 
-export const home: () => Transform = () => (o: Outline) => {
+const changeFocusTo = (n?: OutlineNode) => (o: Outline) => {
+	if (!n) {
+		return o;
+	}
+
 	o.focus.focused = false;
-	o.focus = o.root;
+	o.focus = n;
 	o.focus.focused = true;
 	o.mode = "browse";
 
 	return o;
 };
+
+const getParent = (n: OutlineNode) => get(n, "parent", n);
+
+export const home: () => Transform = () => (o: Outline) =>
+	changeFocusTo(o.root)(o);
 
 export const pipe: (o: Outline) => (...t: Transform[]) => Outline = (
 	outline: Outline
@@ -76,34 +88,34 @@ export const emptyNode: (parent: OutlineNode) => OutlineNode = (
 	focused: false,
 });
 
-export const addChild = () => (o: Outline) => {
-	const node = emptyNode(o.focus);
-	o.focus.children = isNil(o.focus.children)
-		? [node]
-		: [...o.focus.children, node];
-	o.focus.focused = false;
-	o.focus = node;
-	o.focus.focused = true;
-	o.nodes[node.key] = node;
-
-	return o;
-};
-
-export const addSiblin = () => (o: Outline) => {
-	const parent: OutlineNode = get(o.focus, "parent", o.focus);
+const addNodeUnder = (parent: OutlineNode) => (o: Outline) => {
 	const node = emptyNode(parent);
-	parent.children = isNil(parent.children)
-		? [node]
-		: [...parent.children, node];
-	// extract `changeFocusTo(node)`
-	o.focus.focused = false;
-	o.focus = node;
-	o.focus.focused = true;
+
+	if (parent.lastChild) {
+		parent.lastChild.nextSiblin = node;
+		node.previousSiblin = parent.lastChild;
+	}
+	parent.lastChild = node;
+	parent.firstChild = parent.firstChild || node;
 	o.nodes[node.key] = node;
 
+	changeFocusTo(node)(o);
+
 	return o;
 };
 
-export const nextSiblin = () => (o: Outline) => {
-	return o;
-};
+export const addChild = () => (o: Outline) => addNodeUnder(o.focus)(o);
+
+export const addSiblin = () => (o: Outline) =>
+	addNodeUnder(getParent(o.focus))(o);
+
+export const nextSiblin = () => (o: Outline) =>
+	changeFocusTo(o.focus.nextSiblin)(o);
+
+export const previousSiblin = () => (o: Outline) =>
+	changeFocusTo(o.focus.previousSiblin)(o);
+
+export const parent = () => (o: Outline) =>
+	changeFocusTo(getParent(o.focus))(o);
+
+export const child = () => (o: Outline) => changeFocusTo(o.focus.firstChild)(o);

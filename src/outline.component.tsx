@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { init, edit, addSiblin, addChild, nextSiblin, home } from "./outline";
+import {
+	init,
+	edit,
+	addSiblin,
+	addChild,
+	nextSiblin,
+	home,
+	previousSiblin,
+	parent,
+	child,
+} from "./outline";
 import { OutlineLayout } from "./outline-layout.component";
 import { useInput } from "ink";
 import { map, range, isEqual } from "lodash";
@@ -40,7 +50,10 @@ export const Outline = ({ indent = 0 }: { indent?: number }) => {
 
 		// console.log(input, charCodes, key);
 
-		if (key.escape && o.mode === "browse") {
+		if (altReturn()) {
+			// does not work
+			// set({ o: edit(o.focus.label + "\n")(o) });
+		} else if (key.escape && o.mode === "browse") {
 			set({ o: home()(o) });
 		} else if (tab()) {
 			set({ o: { ...addChild()(o), mode: "edit node" } });
@@ -48,8 +61,19 @@ export const Outline = ({ indent = 0 }: { indent?: number }) => {
 			if (o.mode === "browse") {
 				set({ o: { ...nextSiblin()(o), mode: "browse" } });
 			}
-		}
-		if (key.return) {
+		} else if (key.upArrow) {
+			if (o.mode === "browse") {
+				set({ o: { ...previousSiblin()(o), mode: "browse" } });
+			}
+		} else if (key.leftArrow) {
+			if (o.mode === "browse") {
+				set({ o: { ...parent()(o), mode: "browse" } });
+			}
+		} else if (key.rightArrow) {
+			if (o.mode === "browse") {
+				set({ o: { ...child()(o), mode: "browse" } });
+			}
+		} else if (key.return) {
 			if (o.mode === "edit node") {
 				set({ o: { ...o, mode: "browse" } });
 			} else {
@@ -61,7 +85,7 @@ export const Outline = ({ indent = 0 }: { indent?: number }) => {
 	return (
 		<OutlineLayout
 			n={o.root}
-			onChange={(value) => set({ o: edit(value)(o) })}
+			onChange={(value) => !value.includes("\t") && set({ o: edit(value)(o) })}
 			mode={o.mode}
 			indent={0}
 			indentStep={indent}
