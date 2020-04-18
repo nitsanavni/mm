@@ -85,7 +85,12 @@ export const Outline = ({ indent = 0 }: { indent?: number }) => {
 	return (
 		<OutlineLayout
 			n={o.root}
-			onChange={(value) => !value.includes("\t") && set({ o: edit(value)(o) })}
+			// TODO - also disallow shift+tab, it messes up the graph
+			onChange={(value) =>
+				!value.includes("\t") &&
+				!value.includes("[Z") &&
+				set({ o: edit(value)(o) })
+			}
 			mode={o.mode}
 			indent={0}
 			indentStep={indent}

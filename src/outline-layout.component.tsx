@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Color, Text } from "ink";
 import InkTextInput from "ink-text-input";
 import { isEmpty } from "lodash";
+import chalk from "chalk";
 
 import { OutlineNode, Mode } from "./outline";
 
@@ -48,7 +49,7 @@ export const OutlineLayout = ({
 								flexDirection="row"
 								key={`o${next.key}`}
 							>
-								<Text>│</Text>
+								<Text>{chalk.cyan.bold("│")}</Text>
 								<OutlineLayout
 									n={next}
 									{...{ onChange, mode, indent }}
