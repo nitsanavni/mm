@@ -1,7 +1,14 @@
 # 0k
 
+- outline model
+  - `toPlainText()` / `fromPlainText()`
+  - `opts: { preserveStyles: boolean }`
+  - browse - `moveNode`
+  - browse - `changeFocus`
+    - to parent
+    - to siblin
+    - to cousin
 - outline component
-  - performance?
   - reorder siblins
   - move node
 - mm model
@@ -9,19 +16,33 @@
   - auto-layout mode
   -
 
+# S/M
+
+- performance
+- from stdin
+- draw the curves
+
 # in
 
+- read about ink Static
+- does re-render preserve state?
+- wrap text by default?
+- support copy/cut/paste
+  - paste in browse mode creates child(ren) with pasted context
+  - copies a text outline with `\n` and `\t`
+  - copy stack / history; searchable
+    - searchable
 - get GuyR, AviP review
 - multi-line nodes
 - search; with potato
-  - opens a pane on the left with the search box and the sorted results,
+  - opens a pane on the left (new app mode) with the search box and the sorted results,
     going down the results also highlights the node on the tree!
 - edit history, "undo"
   - cmd+Z
     - first take me back to where the last change was
     - next cmd+Z undo the change
 - cursor history, "back"
-- https://www.npmjs.com/package/term-size
+- keep the root node centered; https://www.npmjs.com/package/term-size
 - curves by something similar to boxen - https://www.compart.com/en/unicode/block/U+2500
 - far fetch - multi-select
 

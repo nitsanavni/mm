@@ -51,27 +51,26 @@ export const Outline = ({ indent = 0 }: { indent?: number }) => {
 		// console.log(input, charCodes, key);
 
 		if (altReturn()) {
-			// does not work
-			// set({ o: edit(o.focus.label + "\n")(o) });
+			set({ o: { ...o, mode: "edit node" } });
 		} else if (key.escape && o.mode === "browse") {
 			set({ o: home()(o) });
 		} else if (tab()) {
 			set({ o: { ...addChild()(o), mode: "edit node" } });
 		} else if (key.downArrow) {
 			if (o.mode === "browse") {
-				set({ o: { ...nextSiblin()(o), mode: "browse" } });
+				set({ o: { ...nextSiblin()(o) } });
 			}
 		} else if (key.upArrow) {
 			if (o.mode === "browse") {
-				set({ o: { ...previousSiblin()(o), mode: "browse" } });
+				set({ o: { ...previousSiblin()(o) } });
 			}
 		} else if (key.leftArrow) {
 			if (o.mode === "browse") {
-				set({ o: { ...parent()(o), mode: "browse" } });
+				set({ o: { ...parent()(o) } });
 			}
 		} else if (key.rightArrow) {
 			if (o.mode === "browse") {
-				set({ o: { ...child()(o), mode: "browse" } });
+				set({ o: { ...child()(o) } });
 			}
 		} else if (key.return) {
 			if (o.mode === "edit node") {
@@ -80,6 +79,8 @@ export const Outline = ({ indent = 0 }: { indent?: number }) => {
 				set({ o: { ...addSiblin()(o), mode: "edit node" } });
 			}
 		}
+
+		// console.log(key, input, charCodes);
 	});
 
 	return (
