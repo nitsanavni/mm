@@ -9,19 +9,22 @@ import {
 	home,
 	parent,
 } from "../src/outline";
-import { to } from "./to-plain-outline";
+import { to as toUsingComponent } from "./to-plain-outline";
+import { to } from "../src/outline-to-plain";
 
 const emptyNode = "·";
 
 test("to - null", (t) => {
 	const outline = pipe(init())(home());
 
+	t.is(toUsingComponent(outline), emptyNode);
 	t.is(to(outline), emptyNode);
 });
 
 test("to - one node", (t) => {
 	const outline = pipe(init())(edit("root"), home());
 
+	t.is(toUsingComponent(outline), "root");
 	t.is(to(outline), "root");
 });
 
@@ -29,7 +32,7 @@ test("to - child", (t) => {
 	const outline = pipe(init())(edit("root"), addChild(), edit("child"), home());
 
 	t.is(
-		to(outline),
+		toUsingComponent(outline),
 		`root
   child`
 	);
@@ -44,14 +47,12 @@ test("to - children", (t) => {
 		addSiblin(),
 		home()
 	);
-
-	t.is(
-		to(outline),
-		`root
+	const expected = `root
   child
   ${emptyNode}
-  ${emptyNode}`
-	);
+  ${emptyNode}`;
+	t.is(toUsingComponent(outline), expected);
+	t.is(to(outline), expected);
 });
 
 test("to - extended family", (t) => {
@@ -63,13 +64,12 @@ test("to - extended family", (t) => {
 		addSiblin(),
 		home()
 	);
-
-	t.is(
-		to(outline),
-		`${emptyNode}
+	const expected = `${emptyNode}
   ${emptyNode}
     ${emptyNode}
   ${emptyNode}
-  ${emptyNode}`
-	);
+  ${emptyNode}`;
+
+	t.is(toUsingComponent(outline), expected);
+	t.is(to(outline), expected);
 });

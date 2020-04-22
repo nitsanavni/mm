@@ -18,7 +18,7 @@ import { OutlineLayout } from "./outline-layout.component";
 import { OutlineView } from "./outline-view-mode";
 import { PlainOutline } from "./plain-outline";
 import { from } from "./plain-from-outline";
-import { to } from "../test/to-plain-outline";
+import { to } from "./outline-to-plain";
 
 export const Outline = ({ file }: { file?: string }) => {
 	const [{ o }, set] = useState(() => {
@@ -29,7 +29,7 @@ export const Outline = ({ file }: { file?: string }) => {
 		return { o: init() };
 	});
 
-	// file && writeFile(file, to(o), noop);
+	file && writeFile(file, to(o), noop);
 
 	const [view, setView] = useState<OutlineView>("tree");
 	// TODO - need more state - in order to do "back" action while navigating
