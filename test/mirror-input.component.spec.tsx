@@ -10,7 +10,7 @@ import { tick } from "../src/tick";
 
 const CURSOR = chalk.inverse(" ");
 
-test("input", async (t) => {
+test.failing("input", async (t) => {
 	const { lastFrame, stdin } = render(<Input focus={true} />);
 
 	await tick();
