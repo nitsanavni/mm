@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { map, range, isEqual, noop } from "lodash";
+import { useInput } from "ink";
+import { readFileSync, writeFile } from "fs";
+
 import {
 	init,
 	edit,
@@ -11,11 +15,23 @@ import {
 	child,
 } from "./outline";
 import { OutlineLayout } from "./outline-layout.component";
-import { useInput } from "ink";
-import { map, range, isEqual } from "lodash";
+import { OutlineView } from "./outline-view-mode";
+import { PlainOutline } from "./plain-outline";
+import { from } from "./plain-from-outline";
+import { to } from "../test/to-plain-outline";
 
-export const Outline = ({ indent = 0 }: { indent?: number }) => {
-	const [{ o }, set] = useState({ o: init() });
+export const Outline = ({ file }: { file?: string }) => {
+	const [{ o }, set] = useState(() => {
+		if (file) {
+			return { o: from(readFileSync(file).toString()) };
+		}
+
+		return { o: init() };
+	});
+
+	// file && writeFile(file, to(o), noop);
+
+	const [view, setView] = useState<OutlineView>("tree");
 	// TODO - need more state - in order to do "back" action while navigating
 
 	// TODO - move this to hoc / wrapper
@@ -50,7 +66,9 @@ export const Outline = ({ indent = 0 }: { indent?: number }) => {
 
 		// console.log(input, charCodes, key);
 
-		if (altReturn()) {
+		if (isEqual(input, "v") && o.mode === "browse") {
+			setView(view === "tree" ? "outline" : "tree");
+		} else if (altReturn()) {
 			set({ o: { ...o, mode: "edit node" } });
 		} else if (key.escape && o.mode === "browse") {
 			set({ o: home()(o) });
@@ -83,18 +101,17 @@ export const Outline = ({ indent = 0 }: { indent?: number }) => {
 		// console.log(key, input, charCodes);
 	});
 
-	return (
+	return view === "tree" ? (
 		<OutlineLayout
 			n={o.root}
-			// TODO - also disallow shift+tab, it messes up the graph
 			onChange={(value) =>
 				!value.includes("\t") &&
 				!value.includes("[Z") &&
 				set({ o: edit(value)(o) })
 			}
 			mode={o.mode}
-			indent={0}
-			indentStep={indent}
 		/>
+	) : (
+		<PlainOutline n={o.root} />
 	);
 };

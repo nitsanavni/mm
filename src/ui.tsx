@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, useInput } from "ink";
+import { readFileSync } from "fs";
 
 import {
 	UncontrolledTextInput as TextInput,
@@ -53,7 +54,7 @@ const Mediate = () => {
 	);
 };
 
-export const App = () => <Outline indent={0} />;
+export const App = ({ file }: { file?: string }) => <Outline file={file} />;
 
 export const App2 = () => (
 	<Box height={20} width="100%" flexDirection="column" justifyContent="center">

@@ -10,14 +10,10 @@ export const OutlineLayout = ({
 	n,
 	onChange,
 	mode,
-	indent = 0,
-	indentStep = 0,
 }: {
 	n?: OutlineNode;
 	onChange: (value: string) => void;
 	mode: Mode;
-	indent?: number;
-	indentStep?: number;
 }) =>
 	!n ? (
 		<></>
@@ -62,12 +58,7 @@ export const OutlineLayout = ({
 								key={`o${next.key}`}
 							>
 								<Text>{p}</Text>
-								<OutlineLayout
-									n={next}
-									{...{ onChange, mode, indent }}
-									indent={indent + indentStep}
-									indentStep={indentStep}
-								/>
+								<OutlineLayout n={next} {...{ onChange, mode }} />
 							</Box>
 						);
 						next = next.nextSiblin;
