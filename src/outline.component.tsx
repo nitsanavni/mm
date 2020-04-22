@@ -22,11 +22,15 @@ import { to } from "./outline-to-plain";
 
 export const Outline = ({ file }: { file?: string }) => {
 	const [{ o }, set] = useState(() => {
+		let outline = init();
+
 		if (file) {
-			return { o: from(readFileSync(file).toString()) };
+			try {
+				outline = from(readFileSync(file).toString());
+			} catch (e) {}
 		}
 
-		return { o: init() };
+		return { o: outline };
 	});
 
 	file && writeFile(file, to(o), noop);
