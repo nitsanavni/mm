@@ -12,14 +12,12 @@ export const OutlineLayout = ({
 	mode,
 	indent = 0,
 	indentStep = 0,
-	p = 0,
 }: {
 	n?: OutlineNode;
 	onChange: (value: string) => void;
 	mode: Mode;
 	indent?: number;
 	indentStep?: number;
-	p?: number;
 }) =>
 	!n ? (
 		<></>
@@ -32,7 +30,7 @@ export const OutlineLayout = ({
 			alignItems="center"
 		>
 			<Color bold={n.focused} yellow={n.focused}>
-				{n.focused && mode == "edit node" ? (
+				{n.focused && mode === "edit node" ? (
 					<InkTextInput onChange={onChange} value={n.label} />
 				) : (
 					<Text>{isEmpty(n.label) ? "·" : n.label}</Text>
@@ -43,11 +41,19 @@ export const OutlineLayout = ({
 					let next = n.firstChild;
 					const acc = [];
 
-					const prefixes = [chalk.cyan.bold("│"), chalk.magenta.bold("│")];
-
-					let childP = p;
+					const prefixes = {
+						first: chalk.bold("╭"),
+						middle: chalk.bold(" "),
+						last: chalk.bold("╰"),
+						single: chalk.bold("─"),
+					};
 
 					while (next) {
+						const p = [
+							[prefixes.middle, prefixes.last],
+							[prefixes.first, prefixes.single],
+						][next.previousSiblin ? 0 : 1][next.nextSiblin ? 0 : 1];
+
 						acc.push(
 							<Box
 								alignItems="center"
@@ -55,18 +61,16 @@ export const OutlineLayout = ({
 								flexDirection="row"
 								key={`o${next.key}`}
 							>
-								<Text>{prefixes[p]}</Text>
+								<Text>{p}</Text>
 								<OutlineLayout
 									n={next}
 									{...{ onChange, mode, indent }}
 									indent={indent + indentStep}
 									indentStep={indentStep}
-									p={childP}
 								/>
 							</Box>
 						);
 						next = next.nextSiblin;
-						childP = 1 - childP;
 					}
 
 					return acc;
