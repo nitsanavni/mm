@@ -1,7 +1,16 @@
 import test from "ava";
 import { isEmpty, keys, chain } from "lodash";
 import { inspect } from "util";
-import { pipe, init, edit, addChild, addSiblin, home } from "../src/outline";
+import {
+	pipe,
+	init,
+	edit,
+	addChild,
+	addSiblin,
+	home,
+	child,
+	moveUp,
+} from "../src/outline";
 
 // TODO - fluent api?
 const makeFixture = () =>
@@ -10,11 +19,12 @@ const makeFixture = () =>
 		addChild(),
 		edit("child 1"),
 		addSiblin(),
+		edit("child 2"),
 		addChild(),
 		home()
 	);
 
-test.only("makeFixture", (t) => {
+test("makeFixture", (t) => {
 	const fixture = makeFixture();
 	const msg = inspect(fixture);
 
@@ -24,4 +34,17 @@ test.only("makeFixture", (t) => {
 	// t.is(fixture.root.firstChild!.length, 2, msg);
 	t.is(keys(fixture.nodes).length, 4, msg);
 	t.is(chain(fixture.nodes).keys().uniq().value().length, 4, msg);
+});
+
+test("moveUp", (t) => {
+	const fixture = makeFixture();
+
+	t.is(fixture.root.firstChild?.label, "child 1");
+	t.is(fixture.root.lastChild?.label, "child 2");
+
+	pipe(fixture)(child(), moveUp());
+
+	// notice the reverse order
+	t.is(fixture.root.firstChild?.label, "child 2");
+	t.is(fixture.root.lastChild?.label, "child 1");
 });

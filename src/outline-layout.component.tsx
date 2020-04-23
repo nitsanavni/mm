@@ -25,7 +25,7 @@ export const OutlineLayout = ({
 			marginRight={1}
 			alignItems="center"
 		>
-			<Color bold={n.focused} yellow={n.focused}>
+			<Color bold={n.focused} yellow={n.focused} underline={n.focused}>
 				{n.focused && mode === "edit node" ? (
 					<InkTextInput onChange={onChange} value={n.label} />
 				) : (

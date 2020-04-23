@@ -1,4 +1,5 @@
-import { reduce, get, isNil } from "lodash";
+import { reduce, get, isNil, pullAt, unset } from "lodash";
+import { Outline } from "./outline.component";
 
 // TODO
 // - extract some methods
@@ -119,3 +120,123 @@ export const parent = () => (o: Outline) =>
 	changeFocusTo(getParent(o.focus))(o);
 
 export const child = () => (o: Outline) => changeFocusTo(o.focus.firstChild)(o);
+
+export const deleteSubTree = () => (o: Outline) => {
+	if (o.root.focused) {
+		return o;
+	}
+
+	const target = o.focus;
+
+	if (target.nextSiblin) {
+		nextSiblin()(o);
+	} else if (target.previousSiblin) {
+		previousSiblin()(o);
+	} else {
+		parent()(o);
+	}
+
+	const remove = (n?: OutlineNode) => {
+		if (!n) {
+			return;
+		}
+
+		// TODO - extract this traverse
+		let next = n.firstChild;
+
+		while (next) {
+			remove(next);
+			next = next.nextSiblin;
+		}
+
+		// will it work?
+		unset(o.nodes, n.key);
+
+		if (n.previousSiblin) {
+			n.previousSiblin.nextSiblin = n.nextSiblin;
+		} else {
+			n.parent!.firstChild = n.nextSiblin;
+		}
+
+		if (n.nextSiblin) {
+			n.nextSiblin.previousSiblin = n.previousSiblin;
+		} else {
+			n.parent!.lastChild = n.previousSiblin;
+		}
+	};
+
+	remove(target);
+
+	return o;
+};
+
+export const moveUp = () => (o: Outline) => {
+	// root
+	if (o.root.focused) {
+		return o;
+	}
+
+	// our participants
+	const f = o.focus as OutlineNode;
+	const parent = f.parent;
+	const p = f.previousSiblin;
+	const pp = p?.previousSiblin;
+	const n = f.nextSiblin;
+	const l = parent?.lastChild;
+
+	// pp,p,f,n,l -> pp,f,p,n,l - first last children unchanged
+	// p,f,n,l -> f,p,n,l - first child changed
+	// ok let's convert to array, swap, and then, restore the links
+
+	if (p) {
+		// pp,p,f,n -> pp,f,p,n
+		if (pp) {
+		} else {
+			// parent.firstChild
+		}
+	} else if (n) {
+		// fnl -> nlf
+	} else {
+	}
+
+	return o;
+};
+
+export const moveLeft = () => (o: Outline) => {
+	// root
+	if (o.root.focused) {
+		return o;
+	}
+
+	const n = o.focus as OutlineNode;
+
+	// direct child of root, also cannot move left
+	if (n.parent?.key == o.root.key) {
+		return o;
+	}
+
+	if (n.previousSiblin) {
+		n.previousSiblin.nextSiblin = n.nextSiblin;
+	} else {
+		n.parent!.firstChild = n.nextSiblin;
+	}
+
+	if (n.nextSiblin) {
+		n.nextSiblin.previousSiblin = n.previousSiblin;
+	} else {
+		n.parent!.lastChild = n.previousSiblin;
+	}
+
+	if (n.parent?.nextSiblin) {
+		n.nextSiblin = n.parent.nextSiblin;
+		n.parent.nextSiblin.previousSiblin = n;
+	} else {
+		n.parent!.parent!.lastChild = n;
+	}
+
+	n.previousSiblin = n.parent;
+	n.parent!.nextSiblin = n;
+	n.parent = n.parent?.parent;
+
+	return o;
+};

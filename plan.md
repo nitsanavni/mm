@@ -1,7 +1,13 @@
 # 0k
 
+- hoc for the input from stdin
+- alt+arrows - move nodes
+- space - toggle collapse / expand
+- think - how to store the meta-data of a mm file?
+  - can use a shadow outline to hold some flags
+    - [sbc] - strikethrough, bold, collapsed
+- use https://www.npmjs.com/package/ansi-colors
 - outline model
-  - `toPlainText()` / `fromPlainText()`
   - `opts: { preserveStyles: boolean }`
   - browse - `moveNode`
   - browse - `changeFocus`

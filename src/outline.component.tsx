@@ -13,6 +13,8 @@ import {
 	previousSiblin,
 	parent,
 	child,
+	deleteSubTree,
+	moveLeft,
 } from "./outline";
 import { OutlineLayout } from "./outline-layout.component";
 import { OutlineView } from "./outline-view-mode";
@@ -70,35 +72,33 @@ export const Outline = ({ file }: { file?: string }) => {
 
 		// console.log(input, charCodes, key);
 
-		if (isEqual(input, "v") && o.mode === "browse") {
-			setView(view === "tree" ? "outline" : "tree");
-		} else if (altReturn()) {
-			set({ o: { ...o, mode: "edit node" } });
-		} else if (key.escape && o.mode === "browse") {
-			set({ o: home()(o) });
-		} else if (tab()) {
+		if (tab()) {
 			set({ o: { ...addChild()(o), mode: "edit node" } });
-		} else if (key.downArrow) {
-			if (o.mode === "browse") {
+		} else if (o.mode === "browse") {
+			if (fnBackspace() || input === "d") {
+				set({ o: { ...deleteSubTree()(o), mode: "edit node" } });
+			} else if (backspace() || altReturn()) {
+				set({ o: { ...o, mode: "edit node" } });
+			} else if (isEqual(input, "v")) {
+				setView(view === "tree" ? "outline" : "tree");
+			} else if (key.escape) {
+				set({ o: home()(o) });
+			} else if (key.downArrow) {
 				set({ o: { ...nextSiblin()(o) } });
-			}
-		} else if (key.upArrow) {
-			if (o.mode === "browse") {
+			} else if (key.upArrow) {
 				set({ o: { ...previousSiblin()(o) } });
-			}
-		} else if (key.leftArrow) {
-			if (o.mode === "browse") {
+			} else if (key.leftArrow) {
 				set({ o: { ...parent()(o) } });
-			}
-		} else if (key.rightArrow) {
-			if (o.mode === "browse") {
+			} else if (key.rightArrow) {
 				set({ o: { ...child()(o) } });
-			}
-		} else if (key.return) {
-			if (o.mode === "edit node") {
-				set({ o: { ...o, mode: "browse" } });
-			} else {
+			} else if (key.return) {
 				set({ o: { ...addSiblin()(o), mode: "edit node" } });
+			} else if (altLeft()) {
+				set({ o: { ...moveLeft()(o) } });
+			}
+		} else {
+			if (key.return || key.escape) {
+				set({ o: { ...o, mode: "browse" } });
 			}
 		}
 
@@ -108,11 +108,12 @@ export const Outline = ({ file }: { file?: string }) => {
 	return view === "tree" ? (
 		<OutlineLayout
 			n={o.root}
-			onChange={(value) =>
+			onChange={(value) => {
 				!value.includes("\t") &&
-				!value.includes("[Z") &&
-				set({ o: edit(value)(o) })
-			}
+					!value.includes("[Z") &&
+					!value.includes(String.fromCharCode(27)) &&
+					set({ o: edit(value)(o) });
+			}}
 			mode={o.mode}
 		/>
 	) : (
