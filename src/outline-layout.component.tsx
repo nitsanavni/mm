@@ -32,40 +32,44 @@ export const OutlineLayout = ({
 					<Text>{isEmpty(n.label) ? "·" : n.label}</Text>
 				)}
 			</Color>
-			<Box flexDirection="column">
-				{(() => {
-					let next = n.firstChild;
-					const acc = [];
+			{n.collapsed ? (
+				chalk.yellow("+")
+			) : (
+				<Box flexDirection="column">
+					{(() => {
+						let next = n.firstChild;
+						const acc = [];
 
-					const prefixes = {
-						first: chalk.bold("╭"),
-						middle: chalk.bold(" "),
-						last: chalk.bold("╰"),
-						single: chalk.bold("─"),
-					};
+						const prefixes = {
+							first: chalk.bold("╭"),
+							middle: chalk.bold(" "),
+							last: chalk.bold("╰"),
+							single: chalk.bold("─"),
+						};
 
-					while (next) {
-						const p = [
-							[prefixes.middle, prefixes.last],
-							[prefixes.first, prefixes.single],
-						][next.previousSiblin ? 0 : 1][next.nextSiblin ? 0 : 1];
+						while (next) {
+							const p = [
+								[prefixes.middle, prefixes.last],
+								[prefixes.first, prefixes.single],
+							][next.previousSiblin ? 0 : 1][next.nextSiblin ? 0 : 1];
 
-						acc.push(
-							<Box
-								alignItems="center"
-								marginLeft={1}
-								flexDirection="row"
-								key={`o${next.key}`}
-							>
-								<Text>{p}</Text>
-								<OutlineLayout n={next} {...{ onChange, mode }} />
-							</Box>
-						);
-						next = next.nextSiblin;
-					}
+							acc.push(
+								<Box
+									alignItems="center"
+									marginLeft={1}
+									flexDirection="row"
+									key={`o${next.key}`}
+								>
+									<Text>{p}</Text>
+									<OutlineLayout n={next} {...{ onChange, mode }} />
+								</Box>
+							);
+							next = next.nextSiblin;
+						}
 
-					return acc;
-				})()}
-			</Box>
+						return acc;
+					})()}
+				</Box>
+			)}
 		</Box>
 	);

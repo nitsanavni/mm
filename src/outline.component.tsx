@@ -15,6 +15,10 @@ import {
 	child,
 	deleteSubTree,
 	moveLeft,
+	moveUp,
+	moveDown,
+	moveRight,
+	toggleExpandCollapse,
 } from "./outline";
 import { OutlineLayout } from "./outline-layout.component";
 import { OutlineView } from "./outline-view-mode";
@@ -75,7 +79,9 @@ export const Outline = ({ file }: { file?: string }) => {
 		if (tab()) {
 			set({ o: { ...addChild()(o), mode: "edit node" } });
 		} else if (o.mode === "browse") {
-			if (fnBackspace() || input === "d") {
+			if (space()) {
+				set({ o: { ...toggleExpandCollapse()(o) } });
+			} else if (fnBackspace() || input === "d") {
 				set({ o: { ...deleteSubTree()(o), mode: "edit node" } });
 			} else if (backspace() || altReturn()) {
 				set({ o: { ...o, mode: "edit node" } });
@@ -95,6 +101,12 @@ export const Outline = ({ file }: { file?: string }) => {
 				set({ o: { ...addSiblin()(o), mode: "edit node" } });
 			} else if (altLeft()) {
 				set({ o: { ...moveLeft()(o) } });
+			} else if (altRight()) {
+				set({ o: { ...moveRight()(o) } });
+			} else if (altUp()) {
+				set({ o: { ...moveUp()(o) } });
+			} else if (altDown()) {
+				set({ o: { ...moveDown()(o) } });
 			}
 		} else {
 			if (key.return || key.escape) {

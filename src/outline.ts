@@ -1,4 +1,13 @@
-import { reduce, get, isNil, pullAt, unset } from "lodash";
+import {
+	reduce,
+	get,
+	isNil,
+	pullAt,
+	unset,
+	findIndex,
+	first,
+	last,
+} from "lodash";
 import { Outline } from "./outline.component";
 
 // TODO
@@ -9,6 +18,7 @@ export type OutlineNode = {
 	key: string;
 	label: string;
 	focused: boolean;
+	collapsed: boolean;
 	parent?: OutlineNode;
 	firstChild?: OutlineNode;
 	lastChild?: OutlineNode;
@@ -62,7 +72,7 @@ export const nextKey = () => {
 
 export const init: () => Outline = () => {
 	const key = nextKey();
-	const root: Root = { label: "", key, focused: true };
+	const root: Root = { label: "", key, focused: true, collapsed: false };
 
 	return {
 		focus: root,
@@ -87,6 +97,7 @@ export const emptyNode: (parent: OutlineNode) => OutlineNode = (
 	label: "",
 	parent,
 	focused: false,
+	collapsed: false,
 });
 
 const addNodeUnder = (parent: OutlineNode) => (o: Outline) => {
@@ -120,6 +131,16 @@ export const parent = () => (o: Outline) =>
 	changeFocusTo(getParent(o.focus))(o);
 
 export const child = () => (o: Outline) => changeFocusTo(o.focus.firstChild)(o);
+
+export const toggleExpandCollapse = () => (o: Outline) => {
+	if (o.focus.collapsed) {
+		o.focus.collapsed = false;
+	} else {
+		o.focus.collapsed = !!o.focus.firstChild;
+	}
+
+	return o;
+};
 
 export const deleteSubTree = () => (o: Outline) => {
 	if (o.root.focused) {
@@ -170,34 +191,100 @@ export const deleteSubTree = () => (o: Outline) => {
 	return o;
 };
 
+const siblinArray = (n?: OutlineNode) => {
+	if (!n) {
+		return [];
+	}
+
+	const p = n.parent;
+
+	if (!p) {
+		return [n];
+	}
+
+	let it = p.firstChild;
+
+	const ret = [];
+
+	while (it) {
+		ret.push(it);
+		it = it.nextSiblin;
+	}
+
+	return ret;
+};
+
+const swap = <T>(array: T[], i: number, j: number) => {
+	// https://stackoverflow.com/questions/872310/javascript-swap-array-elements
+	[array[i], array[j]] = [array[j], array[i]];
+};
+
+const connect = (siblins: OutlineNode[]) => {
+	const f = first(siblins)!;
+	const l = last(siblins)!;
+	const parent = f.parent!;
+
+	f.previousSiblin = undefined;
+	l.nextSiblin = undefined;
+
+	parent.firstChild = f;
+	parent.lastChild = l;
+
+	reduce(siblins, (prev, curr) => {
+		prev.nextSiblin = curr;
+		curr.previousSiblin = prev;
+
+		return curr;
+	});
+};
+
 export const moveUp = () => (o: Outline) => {
-	// root
-	if (o.root.focused) {
+	const f = o.focus as OutlineNode;
+	const array = siblinArray(f);
+
+	const pos = findIndex(array, (n) => n.focused);
+	const newPos = pos > 0 ? pos - 1 : array.length - 1;
+	swap(array, pos, newPos);
+	connect(array);
+
+	return o;
+};
+
+export const moveDown = () => (o: Outline) => {
+	const f = o.focus as OutlineNode;
+	const array = siblinArray(f);
+
+	const pos = findIndex(array, (n) => n.focused);
+	const newPos = pos < array.length - 1 ? pos + 1 : 0;
+	swap(array, pos, newPos);
+	connect(array);
+
+	return o;
+};
+
+export const moveRight = () => (o: Outline) => {
+	const f = o.focus as OutlineNode;
+
+	if (!f.previousSiblin && !f.nextSiblin) {
+		// nowhere to move
 		return o;
 	}
 
-	// our participants
-	const f = o.focus as OutlineNode;
-	const parent = f.parent;
-	const p = f.previousSiblin;
-	const pp = p?.previousSiblin;
-	const n = f.nextSiblin;
-	const l = parent?.lastChild;
+	const oldSiblins = siblinArray(f);
+	pullAt(
+		oldSiblins,
+		findIndex(oldSiblins, (s) => s.focused)
+	);
 
-	// pp,p,f,n,l -> pp,f,p,n,l - first last children unchanged
-	// p,f,n,l -> f,p,n,l - first child changed
-	// ok let's convert to array, swap, and then, restore the links
+	const newParent = f.previousSiblin || f.nextSiblin;
+	f.parent = newParent;
+	f.previousSiblin = undefined;
+	f.nextSiblin = undefined;
 
-	if (p) {
-		// pp,p,f,n -> pp,f,p,n
-		if (pp) {
-		} else {
-			// parent.firstChild
-		}
-	} else if (n) {
-		// fnl -> nlf
-	} else {
-	}
+	const newSiblins = [...siblinArray(newParent?.firstChild), f];
+
+	connect(oldSiblins);
+	connect(newSiblins);
 
 	return o;
 };

@@ -1,5 +1,6 @@
 # 0k
 
+- h/? - help & usage
 - hoc for the input from stdin
 - alt+arrows - move nodes
 - space - toggle collapse / expand

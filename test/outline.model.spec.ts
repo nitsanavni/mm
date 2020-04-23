@@ -47,4 +47,8 @@ test("moveUp", (t) => {
 	// notice the reverse order
 	t.is(fixture.root.firstChild?.label, "child 2");
 	t.is(fixture.root.lastChild?.label, "child 1");
+
+	pipe(fixture)(child(), moveUp());
+	t.is(fixture.root.firstChild?.label, "child 1");
+	t.is(fixture.root.lastChild?.label, "child 2");
 });
