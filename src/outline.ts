@@ -315,12 +315,12 @@ export const moveLeft = () => (o: Outline) => {
 	}
 
 	if (n.parent?.nextSiblin) {
-		n.nextSiblin = n.parent.nextSiblin;
 		n.parent.nextSiblin.previousSiblin = n;
 	} else {
 		n.parent!.parent!.lastChild = n;
 	}
 
+	n.nextSiblin = n.parent!.nextSiblin;
 	n.previousSiblin = n.parent;
 	n.parent!.nextSiblin = n;
 	n.parent = n.parent?.parent;

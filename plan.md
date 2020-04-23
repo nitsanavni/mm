@@ -1,5 +1,6 @@
 # 0k
 
+- render performance!
 - h/? - help & usage
 - hoc for the input from stdin
 - alt+arrows - move nodes
