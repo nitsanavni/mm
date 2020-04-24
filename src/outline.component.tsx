@@ -21,6 +21,7 @@ import {
 	toggleExpandCollapse,
 	pipe,
 	expand,
+	toggleCollapseLeft,
 } from "./outline";
 import { OutlineLayout } from "./outline-layout.component";
 import { OutlineView } from "./outline-view-mode";
@@ -86,14 +87,17 @@ export const Outline = ({ file }: { file?: string }) => {
 		const altUp = () => isEqual(charCodes, [27, 91, 65]);
 		const altDown = () => isEqual(charCodes, [27, 91, 66]);
 		const space = () => isEqual(input, " ");
+		const shiftSpace = () => isEqual(input, "`") && key.ctrl;
 		const altReturn = () => key.meta && input.charCodeAt(0) == 13;
 
 		// console.log(input, charCodes, key);
 
 		if (tab()) {
-			set({ o: { ...addChild()(o), mode: "edit node" } });
+			set({ o: { ...pipe(o)(expand(), addChild()), mode: "edit node" } });
 		} else if (o.mode === "browse") {
-			if (space()) {
+			if (shiftSpace()) {
+				set({ o: { ...toggleCollapseLeft()(o) } });
+			} else if (space()) {
 				set({ o: { ...toggleExpandCollapse()(o) } });
 			} else if (fnBackspace() || input === "d") {
 				set({ o: { ...deleteSubTree()(o), mode: "edit node" } });
@@ -133,7 +137,7 @@ export const Outline = ({ file }: { file?: string }) => {
 
 	return view === "tree" ? (
 		<OutlineLayout
-			n={o.root}
+			n={o.visibleRoot}
 			onChange={(value) => {
 				!value.includes("\t") &&
 					!value.includes("[Z") &&

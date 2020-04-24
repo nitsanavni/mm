@@ -1,13 +1,4 @@
-import {
-	reduce,
-	get,
-	isNil,
-	pullAt,
-	unset,
-	findIndex,
-	first,
-	last,
-} from "lodash";
+import { reduce, get, pullAt, unset, findIndex, first, last } from "lodash";
 import { Outline } from "./outline.component";
 
 // TODO
@@ -19,6 +10,7 @@ export type OutlineNode = {
 	label: string;
 	focused: boolean;
 	collapsed?: boolean;
+	collapsedLeft?: boolean;
 	parent?: OutlineNode;
 	firstChild?: OutlineNode;
 	lastChild?: OutlineNode;
@@ -33,6 +25,7 @@ export type Mode = "edit node" | "browse";
 export type Outline = {
 	nodes: { [key: string]: OutlineNode | Root };
 	root: Root;
+	visibleRoot: OutlineNode | Root;
 	focus: OutlineNode | Root;
 	mode: Mode;
 };
@@ -77,6 +70,7 @@ export const init: () => Outline = () => {
 	return {
 		focus: root,
 		root,
+		visibleRoot: root,
 		nodes: { [key]: root },
 		mode: "edit node",
 	};
@@ -139,6 +133,31 @@ export const toggleExpandCollapse = () => (o: Outline) => {
 		o.focus.collapsed = false;
 	} else {
 		o.focus.collapsed = !!o.focus.firstChild;
+	}
+
+	return o;
+};
+
+const findInLineage = (
+	n: OutlineNode | undefined,
+	p: (a?: OutlineNode) => boolean | undefined
+) => {
+	do {
+		n = n?.parent;
+	} while (!p(n));
+
+	return n;
+};
+
+export const toggleCollapseLeft = () => (o: Outline) => {
+	const n = o.focus;
+
+	if (n.collapsedLeft) {
+		n.collapsedLeft = false;
+		o.visibleRoot = findInLineage(n, (a) => a?.collapsedLeft || !a?.parent)!;
+	} else if (!o.root.focused) {
+		n.collapsedLeft = true;
+		o.visibleRoot = n;
 	}
 
 	return o;

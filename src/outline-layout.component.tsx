@@ -11,6 +11,8 @@ const label = (n: OutlineNode) => (isEmpty(n.label) ? "·" : n.label);
 const style = (n: OutlineNode) =>
 	n.focused ? chalk.yellow.bold.underline(label(n)) : label(n);
 
+const collapse = chalk.dim.yellow("+");
+
 export const OutlineLayout = memo(
 	({
 		n,
@@ -24,7 +26,7 @@ export const OutlineLayout = memo(
 		prefix?: string;
 	}) => (
 		<Box flexDirection="row" key={`box ${n.key}`} alignItems="center">
-			{prefix}
+			{n.collapsedLeft ? collapse : prefix}
 			{n.focused && mode === "edit node" ? (
 				<Color yellow={true} bold={true}>
 					<InkTextInput onChange={onChange} value={n.label} />
@@ -32,9 +34,8 @@ export const OutlineLayout = memo(
 			) : (
 				style(n)
 			)}
-			{/* </Color> */}
 			{n.collapsed
-				? chalk.dim.yellow("+")
+				? collapse
 				: n.firstChild && (
 						<Box flexDirection="column">
 							{(() => {
