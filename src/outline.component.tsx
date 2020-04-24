@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { map, range, isEqual, noop } from "lodash";
 import { useInput } from "ink";
-import { readFileSync, writeFile } from "fs";
+import { appendFile, readFileSync, writeFile } from "fs";
 
 import {
 	init,
@@ -19,6 +19,8 @@ import {
 	moveDown,
 	moveRight,
 	toggleExpandCollapse,
+	pipe,
+	expand,
 } from "./outline";
 import { OutlineLayout } from "./outline-layout.component";
 import { OutlineView } from "./outline-view-mode";
@@ -26,7 +28,19 @@ import { PlainOutline } from "./plain-outline";
 import { from } from "./plain-from-outline";
 import { to } from "./outline-to-plain";
 
+let count = 0;
+
+setInterval(
+	() => (
+		count > 0 && appendFile("./outline-layout-log", `${count}\n\r`, noop),
+		(count = 0)
+	),
+	1000
+);
+
 export const Outline = ({ file }: { file?: string }) => {
+	count++;
+
 	const [{ o }, set] = useState(() => {
 		let outline = init();
 
@@ -96,7 +110,7 @@ export const Outline = ({ file }: { file?: string }) => {
 			} else if (key.leftArrow) {
 				set({ o: { ...parent()(o) } });
 			} else if (key.rightArrow) {
-				set({ o: { ...child()(o) } });
+				set({ o: { ...pipe(o)(expand(), child()) } });
 			} else if (key.return) {
 				set({ o: { ...addSiblin()(o), mode: "edit node" } });
 			} else if (altLeft()) {
@@ -124,9 +138,10 @@ export const Outline = ({ file }: { file?: string }) => {
 				!value.includes("\t") &&
 					!value.includes("[Z") &&
 					!value.includes(String.fromCharCode(27)) &&
-					set({ o: edit(value)(o) });
+					set({ ...{ o }, ...{ o: edit(value)(o) } });
 			}}
 			mode={o.mode}
+			prefix={""}
 		/>
 	) : (
 		<PlainOutline n={o.root} />

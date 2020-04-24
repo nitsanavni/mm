@@ -18,7 +18,7 @@ export type OutlineNode = {
 	key: string;
 	label: string;
 	focused: boolean;
-	collapsed: boolean;
+	collapsed?: boolean;
 	parent?: OutlineNode;
 	firstChild?: OutlineNode;
 	lastChild?: OutlineNode;
@@ -131,6 +131,8 @@ export const parent = () => (o: Outline) =>
 	changeFocusTo(getParent(o.focus))(o);
 
 export const child = () => (o: Outline) => changeFocusTo(o.focus.firstChild)(o);
+
+export const expand = () => (o: Outline) => ((o.focus.collapsed = false), o);
 
 export const toggleExpandCollapse = () => (o: Outline) => {
 	if (o.focus.collapsed) {

@@ -1,10 +1,15 @@
 # 0k
 
+- cut-n-paste
+- collapse left!
+  - disappear ancestors
 - render performance!
+  - it must be the rendering part, as when the deep branch is collapsed the problem goes away
+  - migrate to flat map representation of the tree
+  - can even go extreme, and implement a serialize / deserialize mechanism to flatten to a completely shallow object
 - h/? - help & usage
 - hoc for the input from stdin
-- alt+arrows - move nodes
-- space - toggle collapse / expand
+- shift+space - deep collapse / expand
 - think - how to store the meta-data of a mm file?
   - can use a shadow outline to hold some flags
     - [sbc] - strikethrough, bold, collapsed
