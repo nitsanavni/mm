@@ -1,24 +1,34 @@
 import React, { memo } from "react";
-import { Box, Color, Text } from "ink";
+import { Box, Color } from "ink";
 import InkTextInput from "ink-text-input";
-import { isEmpty, noop } from "lodash";
+import { isEmpty } from "lodash";
 import chalk from "chalk";
-import { appendFile } from "fs";
 
 import { OutlineNode, Mode } from "./outline";
 
-const label = (n: OutlineNode) => (isEmpty(n.label) ? "·" : n.label);
-const style = (n: OutlineNode) =>
-	n.focused ? chalk.yellow.bold.underline(label(n)) : label(n);
+const meta = chalk.dim.yellow;
+const focus = chalk.yellowBright.bold.underline;
+const label = (n: OutlineNode) => (isEmpty(n.label) ? meta("·") : n.label);
+const style = (n: OutlineNode) => (n.focused ? focus(label(n)) : label(n));
+const collapse = meta("+");
+const siblinPrefix = (s: OutlineNode) => {
+	const first = meta("⸝");
+	const middle = meta("·");
+	const last = meta("⸌");
+	const single = meta("·");
 
-const collapse = chalk.dim.yellow("+");
+	return [
+		[middle, last],
+		[first, single],
+	][s.previousSiblin ? 0 : 1][s.nextSiblin ? 0 : 1];
+};
 
 export const OutlineLayout = memo(
 	({
 		n,
 		onChange,
 		mode,
-		prefix,
+		prefix = "",
 	}: {
 		n: OutlineNode;
 		onChange: (value: string) => void;
@@ -42,25 +52,13 @@ export const OutlineLayout = memo(
 								let next: OutlineNode | undefined = n.firstChild;
 								const acc = [];
 
-								const prefixes = {
-									first: chalk.bold(" ╭"),
-									middle: chalk.bold("  "),
-									last: chalk.bold(" ╰"),
-									single: chalk.bold(" ─"),
-								};
-
 								while (next) {
-									const p = [
-										[prefixes.middle, prefixes.last],
-										[prefixes.first, prefixes.single],
-									][next.previousSiblin ? 0 : 1][next.nextSiblin ? 0 : 1];
-
 									acc.push(
 										<OutlineLayout
 											key={`ll+${next.key}`}
 											n={next}
 											{...{ onChange, mode }}
-											prefix={p}
+											prefix={siblinPrefix(next)}
 										/>
 									);
 									next = next.nextSiblin;
@@ -71,6 +69,6 @@ export const OutlineLayout = memo(
 						</Box>
 				  )}
 		</Box>
-	),
-	(prev, next) => false
+	)
+	// (prev, next) => false
 );

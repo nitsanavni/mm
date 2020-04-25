@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { map, range, isEqual, noop } from "lodash";
 import { useInput } from "ink";
-import { appendFile, readFileSync, writeFile } from "fs";
+import { readFileSync, writeFile } from "fs";
 
 import {
 	init,
@@ -29,19 +29,7 @@ import { PlainOutline } from "./plain-outline";
 import { from } from "./plain-from-outline";
 import { to } from "./outline-to-plain";
 
-let count = 0;
-
-setInterval(
-	() => (
-		count > 0 && appendFile("./outline-layout-log", `${count}\n\r`, noop),
-		(count = 0)
-	),
-	1000
-);
-
 export const Outline = ({ file }: { file?: string }) => {
-	count++;
-
 	const [{ o }, set] = useState(() => {
 		let outline = init();
 

@@ -128,15 +128,9 @@ export const child = () => (o: Outline) => changeFocusTo(o.focus.firstChild)(o);
 
 export const expand = () => (o: Outline) => ((o.focus.collapsed = false), o);
 
-export const toggleExpandCollapse = () => (o: Outline) => {
-	if (o.focus.collapsed) {
-		o.focus.collapsed = false;
-	} else {
-		o.focus.collapsed = !!o.focus.firstChild;
-	}
-
-	return o;
-};
+export const toggleExpandCollapse = () => (o: Outline) => (
+	(o.focus.collapsed = !!o.focus.firstChild && !o.focus.collapsed), o
+);
 
 const findInLineage = (
 	n: OutlineNode | undefined,
