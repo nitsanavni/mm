@@ -107,14 +107,17 @@ export const addChild = () => (o: Outline) => addNodeUnder(o.focus)(o);
 export const addSiblin = () => (o: Outline) =>
 	addNodeUnder(getParent(o.focus))(o);
 
-export const nextSiblin = () => (o: Outline) =>
-	changeFocusTo(o.focus.nextSiblin)(o);
+export const nextSiblin = () => (o: Outline) => (
+	!o.visibleRoot.focused && changeFocusTo(o.focus.nextSiblin)(o), o
+);
 
-export const previousSiblin = () => (o: Outline) =>
-	changeFocusTo(o.focus.previousSiblin)(o);
+export const previousSiblin = () => (o: Outline) => (
+	!o.visibleRoot.focused && changeFocusTo(o.focus.previousSiblin)(o), o
+);
 
-export const parent = () => (o: Outline) =>
-	changeFocusTo(getParent(o.focus))(o);
+export const parent = () => (o: Outline) => (
+	!o.visibleRoot.focused && changeFocusTo(getParent(o.focus))(o), o
+);
 
 export const child = () => (o: Outline) => changeFocusTo(o.focus.firstChild)(o);
 

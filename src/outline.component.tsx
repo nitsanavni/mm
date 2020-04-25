@@ -98,7 +98,7 @@ export const Outline = ({ file }: { file?: string }) => {
 			} else if (space()) {
 				set({ o: { ...toggleExpandCollapse()(o) } });
 			} else if (fnBackspace() || input === "d") {
-				set({ o: { ...deleteSubTree()(o), mode: "edit node" } });
+				set({ o: { ...deleteSubTree()(o) } });
 			} else if (backspace() || altReturn()) {
 				set({ o: { ...o, mode: "edit node" } });
 			} else if (isEqual(input, "v")) {

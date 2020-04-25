@@ -12,9 +12,9 @@ const label = (n: OutlineNode) => (isEmpty(n.label) ? meta("·") : n.label);
 const style = (n: OutlineNode) => (n.focused ? focus(label(n)) : label(n));
 const collapse = meta("+");
 const siblinPrefix = (s: OutlineNode) => {
-	const first = meta("⸝");
+	const first = meta("/");
 	const middle = meta("·");
-	const last = meta("⸌");
+	const last = meta("\\");
 	const single = meta("·");
 
 	return [
