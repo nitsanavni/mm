@@ -9,7 +9,7 @@
 	"main": "dist/src/index.js",
 	"types": "dist/src/index.d.ts",
 	"scripts": {
-		"hack": "ya run hack",
+		"hack": "FORCE_COLOR=1 parallel --line-buffer ::: 'npm run build:watch' 'npm run test:watch'",
 		"build": "tsc",
 		"build:watch": "tsc -w --preserveWatchOutput",
 		"test": "ava dist/test/*.spec.js",
@@ -20,26 +20,6 @@
 		"lint:check": "tslint -p .",
 		"eslint": "eslint --ext ts --ext tsx .",
 		"preinstall": "git config --local include.path ../.gitconfig"
-	},
-	"ya": {
-		"recipes": {
-			"hack": [
-				"build:watch",
-				"test:watch"
-			]
-		},
-		"ingredients": {
-			"build:watch": {
-				"color": "green",
-				"pwd": ".",
-				"cmd": "npm run build:watch"
-			},
-			"test:watch": {
-				"color": "magenta",
-				"pwd": ".",
-				"cmd": "npm run test:watch"
-			}
-		}
 	},
 	"ava": {
 		"files": [
@@ -69,7 +49,6 @@
 		"@babel/register": "^7.9.0",
 		"@commitlint/cli": "^8.3.5",
 		"@commitlint/config-angular": "^8.3.4",
-		"@papayaglobal/ya": "^1.0.5",
 		"@typescript-eslint/eslint-plugin": "^2.27.0",
 		"@typescript-eslint/parser": "^2.27.0",
 		"ava": "^3.7.0",
