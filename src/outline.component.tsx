@@ -36,7 +36,12 @@ export const Outline = ({ file }: { file?: string }) => {
 
 		if (file) {
 			try {
-				outline = from(readFileSync(file).toString());
+				outline = pipe(from(readFileSync(file).toString()))(
+					// this could be a configurable start-up script
+					child(),
+					toggleDeepCollapse(),
+					toggleCollapseLeft()
+				);
 			} catch (e) {}
 		}
 

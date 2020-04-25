@@ -8,6 +8,8 @@ import {
 	edit,
 	addChild,
 	addSiblin,
+	home,
+	toggleDeepCollapse,
 } from "./outline";
 
 export const from = (plain: string) => {
@@ -36,7 +38,8 @@ export const from = (plain: string) => {
 				return [...acc, edit(stripIndent(line))];
 			},
 			[] as Transform[]
-		)
+		),
+		home()
 	);
 };
 

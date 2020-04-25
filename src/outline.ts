@@ -44,20 +44,14 @@ const changeFocusTo = (n?: OutlineNode) => (o: Outline) => {
 const getParent = (n: OutlineNode) => get(n, "parent", n);
 
 export const home: () => Transform = () => (o: Outline) =>
-	changeFocusTo(o.root)(o);
+	changeFocusTo(o.visibleRoot)(o);
 
-export const pipe: (o: Outline) => (...t: Transform[]) => Outline = (
-	outline: Outline
-) => (...transforms: Transform[]) =>
+export const pipe = (outline: Outline) => (...transforms: Transform[]) =>
 	reduce(transforms, (o, t) => t(o), outline);
 
 let lastKey = 0;
 
-export const nextKey = () => {
-	lastKey++;
-
-	return `${lastKey}`;
-};
+export const nextKey = () => (lastKey++, `${lastKey}`);
 
 export const init: () => Outline = () => {
 	const key = nextKey();
@@ -222,15 +216,17 @@ export const deleteSubTree = () => (o: Outline) => {
 	return o;
 };
 
-const siblinArray = (n?: OutlineNode) => {
+export const siblinArray = (n?: OutlineNode) => {
 	if (!n) {
 		return [];
 	}
 
-	const p = n.parent;
+	return childrenArray(n.parent);
+};
 
+export const childrenArray = (p?: OutlineNode) => {
 	if (!p) {
-		return [n];
+		return [];
 	}
 
 	let it = p.firstChild;
@@ -269,25 +265,42 @@ const connect = (siblins: OutlineNode[]) => {
 	});
 };
 
+// https://github.com/lodash/lodash/issues/2173#issuecomment-406597580
+const rotateLeft = <T>(a: T[]) => a.push(a.shift()!);
+
 export const moveUp = () => (o: Outline) => {
 	const f = o.focus as OutlineNode;
+
 	const array = siblinArray(f);
 
 	const pos = findIndex(array, (n) => n.focused);
-	const newPos = pos > 0 ? pos - 1 : array.length - 1;
-	swap(array, pos, newPos);
+
+	if (pos == 0) {
+		rotateLeft(array);
+	} else {
+		swap(array, pos, pos - 1);
+	}
+
 	connect(array);
 
 	return o;
 };
+
+// https://github.com/lodash/lodash/issues/2173#issuecomment-406597580
+const rotateRight = <T>(a: T[]) => a.unshift(a.pop()!);
 
 export const moveDown = () => (o: Outline) => {
 	const f = o.focus as OutlineNode;
 	const array = siblinArray(f);
 
 	const pos = findIndex(array, (n) => n.focused);
-	const newPos = pos < array.length - 1 ? pos + 1 : 0;
-	swap(array, pos, newPos);
+
+	if (pos == array.length - 1) {
+		rotateRight(array);
+	} else {
+		swap(array, pos, pos + 1);
+	}
+
 	connect(array);
 
 	return o;
@@ -316,6 +329,10 @@ export const moveRight = () => (o: Outline) => {
 
 	connect(oldSiblins);
 	connect(newSiblins);
+
+	if (newParent?.collapsed) {
+		changeFocusTo(newParent)(o);
+	}
 
 	return o;
 };
