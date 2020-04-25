@@ -1,10 +1,6 @@
 import { reduce, get, pullAt, unset, findIndex, first, last } from "lodash";
 import { Outline } from "./outline.component";
 
-// TODO
-// - extract some methods
-// - `traverse` / `visit`
-
 export type OutlineNode = {
 	key: string;
 	label: string;
@@ -76,13 +72,9 @@ export const init: () => Outline = () => {
 	};
 };
 
-export const edit: (input: string) => Transform = (input: string) => (
-	o: Outline
-) => {
-	o.focus.label = input;
-
-	return o;
-};
+export const edit = (input: string) => (o: Outline) => (
+	(o.focus.label = input), o
+);
 
 export const emptyNode: (parent: OutlineNode) => OutlineNode = (
 	parent: OutlineNode
