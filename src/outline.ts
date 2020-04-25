@@ -138,8 +138,9 @@ const deep = (
 };
 
 export const toggleDeepCollapse = () => (o: Outline) => (
-	((collapsed: boolean) => deep(o.focus, (n) => (n.collapsed = collapsed)))(
-		!!o.focus.firstChild && !o.focus.collapsed
+	((collapsed: boolean) =>
+		deep(o.focus, (n) => (n.collapsed = n.firstChild && collapsed)))(
+		!o.focus.collapsed
 	),
 	o
 );
