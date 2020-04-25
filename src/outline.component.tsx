@@ -19,6 +19,7 @@ import {
 	moveDown,
 	moveRight,
 	toggleExpandCollapse,
+	toggleDeepCollapse,
 	pipe,
 	expand,
 	toggleCollapseLeft,
@@ -47,7 +48,7 @@ export const Outline = ({ file }: { file?: string }) => {
 	const [view, setView] = useState<OutlineView>("tree");
 	// TODO - need more state - in order to do "back" action while navigating
 
-	// TODO - move this to hoc / wrapper
+	// TODO - move this to HOC / wrapper
 	const [takeInput, setTakeInput] = useState(false);
 
 	useEffect(() => {
@@ -58,6 +59,7 @@ export const Outline = ({ file }: { file?: string }) => {
 		return () => setTakeInput(false);
 	}, []);
 
+	// TODO - extract custom hook
 	useInput((input, key) => {
 		if (!takeInput) {
 			return;
@@ -75,15 +77,23 @@ export const Outline = ({ file }: { file?: string }) => {
 		const altUp = () => isEqual(charCodes, [27, 91, 65]);
 		const altDown = () => isEqual(charCodes, [27, 91, 66]);
 		const space = () => isEqual(input, " ");
-		const shiftSpace = () => isEqual(input, "`") && key.ctrl;
+		const ctrlSpace = () => isEqual(input, "`") && key.ctrl;
 		const altReturn = () => key.meta && input.charCodeAt(0) == 13;
+		const altPoint = () => key.meta && isEqual(input, ".");
+		const altComma = () => key.meta && isEqual(input, ",");
 
 		// console.log(input, charCodes, key);
 
+		// TODO - convert if-else to Random Access Object/Array
 		if (tab()) {
 			set({ o: { ...pipe(o)(expand(), addChild()), mode: "edit node" } });
 		} else if (o.mode === "browse") {
-			if (shiftSpace()) {
+			if (ctrlSpace()) {
+				set({ o: { ...toggleDeepCollapse()(o) } });
+			} else if (
+				altPoint() ||
+				altComma() /*TODO - make it smarter than a toggle*/
+			) {
 				set({ o: { ...toggleCollapseLeft()(o) } });
 			} else if (space()) {
 				set({ o: { ...toggleExpandCollapse()(o) } });

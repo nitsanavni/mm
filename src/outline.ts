@@ -132,6 +132,26 @@ export const toggleExpandCollapse = () => (o: Outline) => (
 	(o.focus.collapsed = !!o.focus.firstChild && !o.focus.collapsed), o
 );
 
+const deep = (
+	root: OutlineNode | undefined,
+	visit: (n: OutlineNode) => void
+) => {
+	if (!root) {
+		return;
+	}
+
+	visit(root);
+	deep(root.firstChild, visit);
+	deep(root.nextSiblin, visit);
+};
+
+export const toggleDeepCollapse = () => (o: Outline) => (
+	((collapsed: boolean) => deep(o.focus, (n) => (n.collapsed = collapsed)))(
+		!!o.focus.firstChild && !o.focus.collapsed
+	),
+	o
+);
+
 const findInLineage = (
 	n: OutlineNode | undefined,
 	p: (a?: OutlineNode) => boolean | undefined
