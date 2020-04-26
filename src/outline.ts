@@ -16,7 +16,7 @@ export type OutlineNode = {
 
 export type Root = Omit<OutlineNode, "parent">;
 
-export type Mode = "edit node" | "browse";
+export type Mode = "edit node" | "browse" | "search";
 
 export type Outline = {
 	nodes: { [key: string]: OutlineNode | Root };

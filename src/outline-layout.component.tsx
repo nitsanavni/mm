@@ -15,7 +15,7 @@ const siblinPrefix = (s: OutlineNode) => {
 	const first = meta("/");
 	const middle = meta("·");
 	const last = meta("\\");
-	const single = meta("·");
+	const single = meta("-");
 
 	return [
 		[middle, last],

@@ -86,6 +86,7 @@ export const Outline = ({ file }: { file?: string }) => {
 		const altReturn = () => key.meta && input.charCodeAt(0) == 13;
 		const altPoint = () => key.meta && isEqual(input, ".");
 		const altComma = () => key.meta && isEqual(input, ",");
+		const slash = () => isEqual(input, "/");
 
 		// console.log(input, charCodes, key);
 
@@ -93,7 +94,9 @@ export const Outline = ({ file }: { file?: string }) => {
 		if (tab()) {
 			set({ o: { ...pipe(o)(expand(), addChild()), mode: "edit node" } });
 		} else if (o.mode === "browse") {
-			if (ctrlSpace()) {
+			if (slash()) {
+				set({ o: { ...o, mode: "search" } });
+			} else if (ctrlSpace()) {
 				set({ o: { ...toggleDeepCollapse()(o) } });
 			} else if (
 				altPoint() ||
