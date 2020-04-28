@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, FC } from "react";
 import { Box, Color } from "ink";
 import InkTextInput from "ink-text-input";
 import { isEmpty, map } from "lodash";
@@ -30,9 +30,25 @@ type Props = {
 	prefix?: string;
 };
 
+const PrePost: FC<{ prefix?: string; postfix?: string }> = ({
+	prefix = "",
+	postfix = "",
+	children,
+}) => (
+	<span
+		style={{ flexDirection: "row" }}
+		// @ts-ignore
+		unstable__transformChildren={(c) => prefix + children + postfix}
+	>
+		{children}
+	</span>
+);
+
 const Node = ({ n, onChange, mode, prefix = "" }: Props) => (
-	<>
-		{n.collapsedLeft ? collapse : prefix}
+	<PrePost
+		prefix={n.collapsedLeft ? collapse : prefix}
+		postfix={n.collapsed ? collapse : ""}
+	>
 		{n.focused && mode === "edit node" ? (
 			<Color yellow={true} bold={true}>
 				<InkTextInput onChange={onChange} value={n.label} />
@@ -40,30 +56,28 @@ const Node = ({ n, onChange, mode, prefix = "" }: Props) => (
 		) : (
 			style(n)
 		)}
-	</>
+	</PrePost>
 );
 
 const NodeChildren = ({ n, onChange, mode }: Props) => (
 	<>
-		{n.collapsed
-			? collapse
-			: n.firstChild && (
-					<Box flexDirection="column">
-						{map(childrenArray(n), (c) => (
-							<OutlineLayout
-								key={`ll+${c.key}`}
-								n={c}
-								{...{ onChange, mode }}
-								prefix={siblinPrefix(c)}
-							/>
-						))}
-					</Box>
-			  )}
+		{!n.collapsed && n.firstChild && (
+			<Box flexDirection="column" paddingLeft={2}>
+				{map(childrenArray(n), (c) => (
+					<OutlineLayout
+						key={`ll+${c.key}`}
+						n={c}
+						{...{ onChange, mode }}
+						prefix={siblinPrefix(c)}
+					/>
+				))}
+			</Box>
+		)}
 	</>
 );
 
 export const OutlineLayout = memo((props: Props) => (
-	<Box flexDirection="row" key={`box ${props.n.key}`} alignItems="center">
+	<Box flexDirection="column">
 		<Node {...props} />
 		<NodeChildren {...props} />
 	</Box>

@@ -21,6 +21,9 @@
 		"eslint": "eslint --ext ts --ext tsx .",
 		"preinstall": "git config --local include.path ../.gitconfig"
 	},
+	"nyc": {
+		"exclude": []
+	},
 	"ava": {
 		"files": [
 			"dist/test/**/*"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ComponentType } from "react";
 import { map, range, isEqual, noop } from "lodash";
 import { useInput } from "ink";
 import { readFileSync, writeFile } from "fs";
@@ -30,6 +30,53 @@ import { PlainOutline } from "./plain-outline";
 import { from } from "./plain-from-outline";
 import { to } from "./outline-to-plain";
 
+type Key = "space" | "escape" | "alt return";
+
+const useMyInput = (handler: (key: Key) => void) => {
+	const [takeInput, setTakeInput] = useState(false);
+
+	useEffect(() => {
+		if (!takeInput) {
+			setTakeInput(true);
+		}
+
+		return () => setTakeInput(false);
+	}, []);
+
+	// TODO - extract custom hook
+	useInput((input, key) => {
+		if (!takeInput) {
+			return;
+		}
+
+		const charCodes = map(range(input.length), (i) => input.charCodeAt(i));
+
+		// TODO - extract controller
+		const tab = () => key.ctrl && isEqual(input, "i");
+		const shiftTab = () => key.meta && isEqual(input, "[Z");
+		const fnBackspace = () => key.meta && isEqual(input, "[3~");
+		const backspace = () => input.charCodeAt(0) === 127;
+		const altLeft = () => isEqual(charCodes, [27, 91, 68]);
+		const altRight = () => isEqual(charCodes, [27, 91, 67]);
+		const altUp = () => isEqual(charCodes, [27, 91, 65]);
+		const altDown = () => isEqual(charCodes, [27, 91, 66]);
+		const space = () => isEqual(input, " ");
+		const ctrlSpace = () => isEqual(input, "`") && key.ctrl;
+		const altReturn = () => key.meta && input.charCodeAt(0) == 13;
+		const altPoint = () => key.meta && isEqual(input, ".");
+		const altComma = () => key.meta && isEqual(input, ",");
+		const slash = () => isEqual(input, "/");
+
+		if (space()) {
+			handler("space");
+		} else if (key.escape) {
+			handler("escape");
+		} else if (altReturn()) {
+			handler("alt return");
+		}
+	});
+};
+
 export const Outline = ({ file }: { file?: string }) => {
 	const [{ o }, set] = useState(() => {
 		let outline = init();
@@ -53,7 +100,15 @@ export const Outline = ({ file }: { file?: string }) => {
 	const [view, setView] = useState<OutlineView>("tree");
 	// TODO - need more state - in order to do "back" action while navigating
 
-	// TODO - move this to HOC / wrapper
+	useMyInput((k) => {
+		o.mode == "browse" &&
+			{
+				space: () => set({ o: { ...toggleExpandCollapse()(o) } }),
+				escape: () => set({ o: home()(o) }),
+				"alt return": noop,
+			}[k]();
+	});
+
 	const [takeInput, setTakeInput] = useState(false);
 
 	useEffect(() => {
@@ -104,7 +159,7 @@ export const Outline = ({ file }: { file?: string }) => {
 			) {
 				set({ o: { ...toggleCollapseLeft()(o) } });
 			} else if (space()) {
-				set({ o: { ...toggleExpandCollapse()(o) } });
+				// set({ o: { ...toggleExpandCollapse()(o) } });
 			} else if (fnBackspace() || input === "d") {
 				set({ o: { ...deleteSubTree()(o) } });
 			} else if (backspace() || altReturn()) {
@@ -112,7 +167,7 @@ export const Outline = ({ file }: { file?: string }) => {
 			} else if (isEqual(input, "v")) {
 				setView(view === "tree" ? "outline" : "tree");
 			} else if (key.escape) {
-				set({ o: home()(o) });
+				// set({ o: home()(o) });
 			} else if (key.downArrow) {
 				set({ o: { ...nextSiblin()(o) } });
 			} else if (key.upArrow) {

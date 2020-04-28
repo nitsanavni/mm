@@ -10,7 +10,13 @@ import {
 	home,
 	child,
 	moveUp,
+	moveLeft,
+	nextSiblin,
+	moveRight,
+	moveDown,
+	deleteSubTree,
 } from "../src/outline";
+import { to } from "../src/outline-to-plain";
 
 // TODO - fluent api?
 const makeFixture = () =>
@@ -52,3 +58,35 @@ test("moveUp", (t) => {
 	t.is(fixture.root.firstChild?.label, "child 1");
 	t.is(fixture.root.lastChild?.label, "child 2");
 });
+
+test("moving", (t) => {
+	const o = pipe(init())(
+		edit("1"),
+		addChild(),
+		edit("2"),
+		addSiblin(),
+		edit("3"),
+		addChild(),
+		edit("X")
+	);
+
+	t.is(to(o), "1\n  2\n  3\n    X");
+
+	t.is(to(moveLeft()(o)), "1\n  2\n  3\n  X");
+	t.is(to(moveUp()(o)), "1\n  2\n  X\n  3");
+	t.is(to(moveRight()(o)), "1\n  2\n    X\n  3");
+	t.is(to(moveLeft()(o)), "1\n  2\n  X\n  3");
+	t.is(to(moveUp()(o)), "1\n  X\n  2\n  3");
+	t.is(to(moveRight()(o)), "1\n  2\n    X\n  3");
+	t.is(to(moveLeft()(o)), "1\n  2\n  X\n  3");
+	t.is(to(moveDown()(o)), "1\n  2\n  3\n  X");
+});
+
+test("deleteSubTree", (t) => {
+	t.is(
+		to(pipe(makeFixture())(child(), nextSiblin(), deleteSubTree())),
+		"root\n  child 1"
+	);
+});
+
+test("toggleCollapseLeft", (t) => {});
