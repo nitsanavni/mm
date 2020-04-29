@@ -2,6 +2,13 @@
 	"name": "mind-map-cli",
 	"version": "0.0.0-semanticlaly-released",
 	"description": "mind map for the command line",
+	"keywords": [
+		"cli",
+		"mind-map",
+		"mindmap",
+		"outline",
+		"tree"
+	],
 	"files": [
 		"dist/src/"
 	],
