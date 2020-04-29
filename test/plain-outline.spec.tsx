@@ -7,7 +7,7 @@ import {
 	addChild,
 	addSiblin,
 	home,
-	parent,
+	goToParent,
 } from "../src/outline";
 import { to as toUsingComponent } from "./to-plain-outline";
 import { to } from "../src/outline-to-plain";
@@ -59,7 +59,7 @@ test("to - extended family", (t) => {
 	const outline = pipe(init())(
 		addChild(),
 		addChild(),
-		parent(),
+		goToParent(),
 		addSiblin(),
 		addSiblin(),
 		home()

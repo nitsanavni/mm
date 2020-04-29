@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ComponentType } from "react";
+import React, { useState, useEffect } from "react";
 import { map, range, isEqual, noop } from "lodash";
 import { useInput } from "ink";
 import { readFileSync, writeFile } from "fs";
@@ -11,7 +11,7 @@ import {
 	nextSiblin,
 	home,
 	previousSiblin,
-	parent,
+	goToParent,
 	child,
 	deleteSubTree,
 	moveLeft,
@@ -23,6 +23,7 @@ import {
 	pipe,
 	expand,
 	toggleCollapseLeft,
+	Outline as OutlineModel,
 } from "./outline";
 import { OutlineLayout } from "./outline-layout.component";
 import { OutlineView } from "./outline-view-mode";
@@ -31,6 +32,9 @@ import { from } from "./plain-from-outline";
 import { to } from "./outline-to-plain";
 
 type Key = "space" | "escape" | "alt return";
+
+const write = (file: string | undefined, o: OutlineModel) =>
+	file && writeFile(file, to(o), noop);
 
 const useMyInput = (handler: (key: Key) => void) => {
 	const [takeInput, setTakeInput] = useState(false);
@@ -49,23 +53,23 @@ const useMyInput = (handler: (key: Key) => void) => {
 			return;
 		}
 
-		const charCodes = map(range(input.length), (i) => input.charCodeAt(i));
+		// const charCodes = map(range(input.length), (i) => input.charCodeAt(i));
 
 		// TODO - extract controller
-		const tab = () => key.ctrl && isEqual(input, "i");
-		const shiftTab = () => key.meta && isEqual(input, "[Z");
-		const fnBackspace = () => key.meta && isEqual(input, "[3~");
-		const backspace = () => input.charCodeAt(0) === 127;
-		const altLeft = () => isEqual(charCodes, [27, 91, 68]);
-		const altRight = () => isEqual(charCodes, [27, 91, 67]);
-		const altUp = () => isEqual(charCodes, [27, 91, 65]);
-		const altDown = () => isEqual(charCodes, [27, 91, 66]);
+		// const tab = () => key.ctrl && isEqual(input, "i");
+		// const shiftTab = () => key.meta && isEqual(input, "[Z");
+		// const fnBackspace = () => key.meta && isEqual(input, "[3~");
+		// const backspace = () => input.charCodeAt(0) === 127;
+		// const altLeft = () => isEqual(charCodes, [27, 91, 68]);
+		// const altRight = () => isEqual(charCodes, [27, 91, 67]);
+		// const altUp = () => isEqual(charCodes, [27, 91, 65]);
+		// const altDown = () => isEqual(charCodes, [27, 91, 66]);
 		const space = () => isEqual(input, " ");
-		const ctrlSpace = () => isEqual(input, "`") && key.ctrl;
-		const altReturn = () => key.meta && input.charCodeAt(0) == 13;
-		const altPoint = () => key.meta && isEqual(input, ".");
-		const altComma = () => key.meta && isEqual(input, ",");
-		const slash = () => isEqual(input, "/");
+		// const ctrlSpace = () => isEqual(input, "`") && key.ctrl;
+		const altReturn = () => key.meta && input.charCodeAt(0) === 13;
+		// const altPoint = () => key.meta && isEqual(input, ".");
+		// const altComma = () => key.meta && isEqual(input, ",");
+		// const slash = () => isEqual(input, "/");
 
 		if (space()) {
 			handler("space");
@@ -89,25 +93,28 @@ export const Outline = ({ file }: { file?: string }) => {
 					toggleDeepCollapse(),
 					toggleCollapseLeft()
 				);
-			} catch (e) {}
+			} catch (e) {
+				// tslint:disable-line
+			}
 		}
 
 		return { o: outline };
 	});
 
-	file && writeFile(file, to(o), noop);
+	write(file, o);
 
 	const [view, setView] = useState<OutlineView>("tree");
 	// TODO - need more state - in order to do "back" action while navigating
 
-	useMyInput((k) => {
-		o.mode == "browse" &&
+	useMyInput(
+		(k) =>
+			o.mode === "browse" &&
 			{
 				space: () => set({ o: { ...toggleExpandCollapse()(o) } }),
 				escape: () => set({ o: home()(o) }),
 				"alt return": noop,
-			}[k]();
-	});
+			}[k]()
+	);
 
 	const [takeInput, setTakeInput] = useState(false);
 
@@ -129,7 +136,6 @@ export const Outline = ({ file }: { file?: string }) => {
 
 		// TODO - extract controller
 		const tab = () => key.ctrl && isEqual(input, "i");
-		const shiftTab = () => key.meta && isEqual(input, "[Z");
 		const fnBackspace = () => key.meta && isEqual(input, "[3~");
 		const backspace = () => input.charCodeAt(0) === 127;
 		const altLeft = () => isEqual(charCodes, [27, 91, 68]);
@@ -138,7 +144,7 @@ export const Outline = ({ file }: { file?: string }) => {
 		const altDown = () => isEqual(charCodes, [27, 91, 66]);
 		const space = () => isEqual(input, " ");
 		const ctrlSpace = () => isEqual(input, "`") && key.ctrl;
-		const altReturn = () => key.meta && input.charCodeAt(0) == 13;
+		const altReturn = () => key.meta && input.charCodeAt(0) === 13;
 		const altPoint = () => key.meta && isEqual(input, ".");
 		const altComma = () => key.meta && isEqual(input, ",");
 		const slash = () => isEqual(input, "/");
@@ -173,7 +179,7 @@ export const Outline = ({ file }: { file?: string }) => {
 			} else if (key.upArrow) {
 				set({ o: { ...previousSiblin()(o) } });
 			} else if (key.leftArrow) {
-				set({ o: { ...parent()(o) } });
+				set({ o: { ...goToParent()(o) } });
 			} else if (key.rightArrow) {
 				set({ o: { ...pipe(o)(expand(), child()) } });
 			} else if (key.return) {
@@ -199,12 +205,12 @@ export const Outline = ({ file }: { file?: string }) => {
 	return view === "tree" ? (
 		<OutlineLayout
 			n={o.visibleRoot}
-			onChange={(value) => {
+			onChange={(value) =>
 				!value.includes("\t") &&
-					!value.includes("[Z") &&
-					!value.includes(String.fromCharCode(27)) &&
-					set({ ...{ o }, ...{ o: edit(value)(o) } });
-			}}
+				!value.includes("[Z") &&
+				!value.includes(String.fromCharCode(27)) &&
+				set({ ...{ o }, ...{ o: edit(value)(o) } })
+			}
 			mode={o.mode}
 			prefix={""}
 		/>

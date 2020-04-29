@@ -88,5 +88,3 @@ test("deleteSubTree", (t) => {
 		"root\n  child 1"
 	);
 });
-
-test("toggleCollapseLeft", (t) => {});

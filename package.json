@@ -16,9 +16,10 @@
 		"test:watch": "ava -w dist/test/*.spec.js",
 		"style:check": "prettier --check . || (c=$?; echo \"\ntry running 'npm run style' to fix the issues\"; (exit $c))",
 		"style": "prettier --write .",
-		"lint": "tslint --fix -p .",
-		"lint:check": "tslint -p .",
-		"eslint": "eslint --ext ts --ext tsx .",
+		"tslint": "tslint --fix -p .",
+		"tslint:check": "tslint -p .",
+		"eslint": "eslint --ext ts --ext tsx --fix .",
+		"eslint:check": "eslint --ext ts --ext tsx .",
 		"preinstall": "git config --local include.path ../.gitconfig"
 	},
 	"nyc": {
@@ -60,6 +61,7 @@
 		"commitizen": "^4.0.4",
 		"cz-conventional-changelog": "^3.1.0",
 		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.11.0",
 		"eslint-config-xo-react": "^0.23.0",
 		"eslint-plugin-react": "^7.19.0",
 		"eslint-plugin-react-hooks": "^3.0.0",

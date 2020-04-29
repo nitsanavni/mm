@@ -1,7 +1,7 @@
 import { split, reduce, trim, times } from "lodash";
 
 import {
-	parent,
+	goToParent,
 	init,
 	pipe,
 	Transform,
@@ -9,7 +9,6 @@ import {
 	addChild,
 	addSiblin,
 	home,
-	toggleDeepCollapse,
 } from "./outline";
 
 export const from = (plain: string) => {
@@ -29,7 +28,7 @@ export const from = (plain: string) => {
 				} else if (currentIndent > previousIndent) {
 					acc.push(addChild());
 				} else {
-					times(previousIndent - currentIndent, () => acc.push(parent()));
+					times(previousIndent - currentIndent, () => acc.push(goToParent()));
 					acc.push(addSiblin());
 				}
 

@@ -109,7 +109,7 @@ export const previousSiblin = () => (o: Outline) => (
 	!o.visibleRoot.focused && changeFocusTo(o.focus.previousSiblin)(o), o
 );
 
-export const parent = () => (o: Outline) => (
+export const goToParent = () => (o: Outline) => (
 	!o.visibleRoot.focused && changeFocusTo(getParent(o.focus))(o), o
 );
 
@@ -179,7 +179,7 @@ export const deleteSubTree = () => (o: Outline) => {
 	} else if (target.previousSiblin) {
 		previousSiblin()(o);
 	} else {
-		parent()(o);
+		goToParent()(o);
 	}
 
 	const remove = (n?: OutlineNode) => {
@@ -275,7 +275,7 @@ export const moveUp = () => (o: Outline) => {
 
 	const pos = findIndex(array, (n) => n.focused);
 
-	if (pos == 0) {
+	if (pos === 0) {
 		rotateLeft(array);
 	} else {
 		swap(array, pos, pos - 1);
@@ -295,7 +295,7 @@ export const moveDown = () => (o: Outline) => {
 
 	const pos = findIndex(array, (n) => n.focused);
 
-	if (pos == array.length - 1) {
+	if (pos === array.length - 1) {
 		rotateRight(array);
 	} else {
 		swap(array, pos, pos + 1);
@@ -346,7 +346,7 @@ export const moveLeft = () => (o: Outline) => {
 	const n = o.focus as OutlineNode;
 
 	// direct child of root, also cannot move left
-	if (n.parent?.key == o.root.key) {
+	if (n.parent?.key === o.root.key) {
 		return o;
 	}
 
