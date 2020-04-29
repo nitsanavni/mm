@@ -6,6 +6,7 @@ import { render } from "ink-testing-library";
 import { OutlineLayout } from "../src/outline-layout.component";
 import { cursor } from "./cursor";
 import chalk from "chalk";
+import stripAnsi from "strip-ansi";
 
 test("null layout", (t) => {
 	const { lastFrame } = render(
@@ -16,7 +17,7 @@ test("null layout", (t) => {
 		/>
 	);
 
-	t.is(lastFrame(), "·");
+	t.is(stripAnsi(lastFrame()), "·");
 });
 
 test.failing("`edit node` mode", (t) => {
