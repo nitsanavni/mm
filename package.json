@@ -10,6 +10,7 @@
 		"outline",
 		"tree"
 	],
+	"repository": "https://github.com/nitsanavni/mm",
 	"files": [
 		"dist/src/*.js"
 	],
