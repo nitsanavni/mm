@@ -31,7 +31,7 @@ import { PlainOutline } from "./plain-outline";
 import { from } from "./plain-from-outline";
 import { to } from "./outline-to-plain";
 
-type Key = "space" | "escape" | "alt return";
+type Key = "space" | "escape" | "alt return" | "q";
 
 const write = (file: string | undefined, o: OutlineModel) =>
 	file && writeFile(file, to(o), noop);
@@ -77,6 +77,8 @@ const useMyInput = (handler: (key: Key) => void) => {
 			handler("escape");
 		} else if (altReturn()) {
 			handler("alt return");
+		} else if (input === "q") {
+			handler("q");
 		}
 	});
 };
@@ -110,6 +112,7 @@ export const Outline = ({ file }: { file?: string }) => {
 				space: () => set({ o: { ...toggleExpandCollapse()(o) } }),
 				escape: () => set({ o: home()(o) }),
 				"alt return": noop,
+				q: () => process.exit(),
 			}[k]()
 	);
 
