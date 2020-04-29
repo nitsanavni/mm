@@ -1,7 +1,7 @@
 {
-	"name": "mm-cli",
+	"name": "mind-map-cli",
 	"version": "0.0.0-semanticlaly-released",
-	"description": "mindmap for the command line",
+	"description": "mind map for the command line",
 	"files": [
 		"dist/src/"
 	],
