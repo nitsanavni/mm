@@ -16,7 +16,7 @@ test("null layout", (t) => {
 		/>
 	);
 
-	t.is(lastFrame(), "");
+	t.is(lastFrame(), "·");
 });
 
 test.failing("`edit node` mode", (t) => {
@@ -31,7 +31,7 @@ test.failing("`edit node` mode", (t) => {
 	t.is(lastFrame(), chalk.bold(cursor));
 });
 
-test.failing("label", (t) => {
+test("label", (t) => {
 	const { lastFrame } = render(
 		<OutlineLayout
 			onChange={noop}

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import { Box, Color } from "ink";
 import InkTextInput from "ink-text-input";
 import { isEmpty, map } from "lodash";
@@ -44,11 +44,11 @@ const Node = ({ n, onChange, mode, prefix = "" }: Props) => (
 );
 
 const NodeChildren = ({ n, onChange, mode }: Props) => (
-	<>
+	<div>
 		{n.collapsed
 			? collapse
 			: n.firstChild && (
-					<Box flexDirection="column">
+					<>
 						{map(childrenArray(n), (c) => (
 							<OutlineLayout
 								key={`ll+${c.key}`}
@@ -57,14 +57,14 @@ const NodeChildren = ({ n, onChange, mode }: Props) => (
 								prefix={siblinPrefix(c)}
 							/>
 						))}
-					</Box>
+					</>
 			  )}
-	</>
+	</div>
 );
 
-export const OutlineLayout = memo((props: Props) => (
+export const OutlineLayout = (props: Props) => (
 	<Box flexDirection="row" key={`box ${props.n.key}`} alignItems="center">
 		<Node {...props} />
 		<NodeChildren {...props} />
 	</Box>
-));
+);
