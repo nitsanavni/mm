@@ -88,10 +88,7 @@ export const Outline = ({ file }: { file?: string }) => {
 		if (file) {
 			try {
 				outline = pipe(from(readFileSync(file).toString()))(
-					// this could be a configurable start-up script
-					child(),
-					toggleDeepCollapse(),
-					toggleCollapseLeft()
+					toggleDeepCollapse()
 				);
 			} catch (e) {
 				// tslint:disable-line
