@@ -7,7 +7,7 @@ import chalk from "chalk";
 import { Outline } from "../src/outline.component";
 import { rturn } from "./keys";
 import { cursor } from "./cursor";
-import { tick } from "../src/tick";
+import { tick } from "./tick";
 
 test.failing("edit the root", async (t) => {
 	const { lastFrame, stdin } = render(<Outline />);
