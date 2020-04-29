@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Text } from "ink";
-import { isEmpty } from "lodash";
+import { isEmpty, map } from "lodash";
 
-import { OutlineNode } from "./outline";
+import { OutlineNode, siblinArray } from "./outline";
 
 export const PlainOutline = ({ n }: { n?: OutlineNode }) =>
 	!n ? (
@@ -10,27 +10,10 @@ export const PlainOutline = ({ n }: { n?: OutlineNode }) =>
 	) : (
 		<Box flexDirection="column" marginRight={1}>
 			<Text>{isEmpty(n.label) ? "·" : n.label}</Text>
-			<Box flexDirection="column">
-				{(() => {
-					let next = n.firstChild;
-					const acc = [];
-
-					while (next) {
-						acc.push(
-							<Box
-								alignItems="center"
-								marginLeft={2}
-								flexDirection="row"
-								key={`o${next.key}`}
-							>
-								<PlainOutline n={next} />
-							</Box>
-						);
-						next = next.nextSiblin;
-					}
-
-					return acc;
-				})()}
+			<Box flexDirection="column" paddingLeft={2}>
+				{map(siblinArray(n.firstChild), (s) => (
+					<PlainOutline n={s} key={`s${s.key}`} />
+				))}
 			</Box>
 		</Box>
 	);
