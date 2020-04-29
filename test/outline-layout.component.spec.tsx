@@ -7,7 +7,7 @@ import { OutlineLayout } from "../src/outline-layout.component";
 import { cursor } from "./cursor";
 import chalk from "chalk";
 
-test.failing("null layout", (t) => {
+test("null layout", (t) => {
 	const { lastFrame } = render(
 		<OutlineLayout
 			onChange={noop}
