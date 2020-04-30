@@ -1,43 +1,72 @@
 import React, { useState } from "react";
 import test from "ava";
 import { render } from "ink-testing-library";
+import { times, sample } from "lodash";
 
 import { Clip } from "../src/clip";
 import { PlainOutline } from "../src/plain-outline";
 import { initWith, next } from "../src/play-control";
-import { edit, addChild } from "../src/outline";
+import {
+	edit,
+	addChild,
+	addSiblin,
+	moveLeft,
+	moveDown,
+	moveRight,
+} from "../src/outline";
 
-test("hmm", (t) => {
-	type P = { clip: Clip };
+type P = { clip: Clip };
+type CB = () => void;
 
+test("play a clip", (t) => {
 	// TODO - can this cb hell be simplified?
-	type CB = () => void;
+	let tick: CB;
+	let tock: CB;
 
-	let ourCb: CB;
+	const useTimer = (cb: CB) => ((tick = cb), (tock = cb));
 
-	const tick = () => ourCb && ourCb();
+	const useClip = (clip: Clip) => {
+		const [state, setState] = useState(initWith(clip));
+		useTimer(() => setState(next({ ...state, clip })));
 
-	const useTimer = (cb: CB) => (ourCb = cb);
-
-	const UseClip = ({ clip }: P) => {
-		const [o, set] = useState({ o: initWith(clip).o });
-
-		useTimer(() => set({ o: next({ clip, o: o.o, nextStep: 0 }).o }));
-
-		return <PlainOutline n={o.o.visibleRoot} />;
+		return state.o;
 	};
 
-	const clip = {
-		initialState: [edit("root"), addChild(), edit("child")],
+	const PlainClipPlayer = ({ clip }: P) => (
+		<PlainOutline n={useClip(clip).visibleRoot} />
+	);
+
+	const clip: Clip = {
+		initialState: [
+			edit("A"),
+			addChild(),
+			edit("1"),
+			addSiblin(),
+			edit("2"),
+			addSiblin(),
+			edit("3"),
+			addChild(),
+			edit("move me"),
+		],
 		rate: 0,
-		steps: [edit("modified child")],
+		steps: [moveLeft(), moveDown(), moveRight(), moveLeft()],
 	};
 
-	const { lastFrame } = render(<UseClip {...{ clip }} />);
+	const { lastFrame } = render(<PlainClipPlayer {...{ clip }} />);
 
-	t.is(lastFrame(), "root\n  child");
+	const expectedFrames = [
+		"A\n  1\n  2\n  3\n    move me", // init
+		"A\n  1\n  2\n  3\n  move me", // moveLeft
+		"A\n  move me\n  1\n  2\n  3", // moveDown
+		"A\n  1\n    move me\n  2\n  3", // moveRight
+		"A\n  1\n  move me\n  2\n  3", // moveLeft
+	];
 
-	tick();
-
-	t.is(lastFrame(), "root\n  modified child");
+	times(
+		30, // many times
+		(it) => (
+			t.is(lastFrame(), expectedFrames[it % expectedFrames.length]),
+			sample([tick, tock])!()
+		)
+	);
 });

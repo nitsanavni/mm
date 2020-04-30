@@ -17,11 +17,17 @@ export const next: Control<{ clip: Clip; o: Outline; nextStep: number }> = ({
 }) => {
 	const step = clip.steps[nextStep];
 
+	const restart = nextStep > clip.steps.length - 1;
+
+	if (restart) {
+		return initWith(clip);
+	}
+
 	const transform: Transform = isFunction(step) ? step : step.transform;
 
 	return {
 		o: transform(o),
-		nextStep: nextStep >= clip.steps.length - 1 ? 0 : nextStep + 1,
+		nextStep: nextStep + 1,
 		wait: clip.rate,
 	};
 };
