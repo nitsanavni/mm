@@ -1,9 +1,9 @@
 import { Transform } from "./outline";
+import { Many } from "lodash";
 
-type Step = { transform: Transform; extraWait: number } | Transform;
+type Step = { transform: Many<Transform>; extraWait: number } | Many<Transform>;
 
 export type Clip = Readonly<{
-	initialState: ReadonlyArray<Transform>;
 	rate: number;
 	steps: ReadonlyArray<Step>;
 }>;

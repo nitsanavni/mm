@@ -17,7 +17,6 @@
 	"bin": {
 		"mm": "dist/src/cli.js"
 	},
-	"main": "dist/src/index.js",
 	"scripts": {
 		"hack": "FORCE_COLOR=1 parallel --line-buffer ::: 'npm run build:watch' 'npm run test:watch'",
 		"build": "tsc",
@@ -47,6 +46,7 @@
 		]
 	},
 	"dependencies": {
+		"arrify": "^2.0.1",
 		"chalk": "^4.0.0",
 		"ink": "^2.7.1",
 		"ink-text-input": "^3.2.2",
@@ -55,15 +55,17 @@
 		"react": "^16.13.1"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.14.149",
-		"@types/meow": "^5.0.0",
-		"@types/react": "^16.9.34",
 		"@babel/core": "^7.9.0",
 		"@babel/preset-react": "^7.9.4",
 		"@babel/register": "^7.9.0",
 		"@commitlint/cli": "^8.3.5",
 		"@commitlint/config-angular": "^8.3.4",
 		"@istanbuljs/nyc-config-typescript": "^1.0.1",
+		"@sinonjs/fake-timers": "^6.0.1",
+		"@types/lodash": "^4.14.149",
+		"@types/meow": "^5.0.0",
+		"@types/react": "^16.9.34",
+		"@types/sinonjs__fake-timers": "^6.0.1",
 		"@typescript-eslint/eslint-plugin": "^2.27.0",
 		"@typescript-eslint/parser": "^2.27.0",
 		"ava": "^3.7.0",

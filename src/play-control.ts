@@ -1,6 +1,8 @@
-import { Outline, pipe, init, Transform } from "./outline";
+import arrify from "arrify";
+
+import { Outline, pipe, init } from "./outline";
 import { Clip } from "./clip";
-import { isFunction } from "lodash";
+import { get } from "lodash";
 
 export type Next = {
 	o: Outline;
@@ -10,30 +12,14 @@ export type Next = {
 
 export type Control<T> = (arg: T) => Next;
 
-export const next: Control<{ clip: Clip; o: Outline; nextStep: number }> = ({
+export const next: Control<{ clip: Clip; o?: Outline; nextStep?: number }> = ({
 	clip,
-	o,
-	nextStep,
-}) => {
-	const step = clip.steps[nextStep];
-
-	const restart = nextStep > clip.steps.length - 1;
-
-	if (restart) {
-		return initWith(clip);
-	}
-
-	const transform: Transform = isFunction(step) ? step : step.transform;
-
-	return {
-		o: transform(o),
-		nextStep: nextStep + 1,
-		wait: clip.rate,
-	};
-};
-
-export const initWith: Control<Clip> = (clip) => ({
-	o: pipe(init())(...clip.initialState),
-	nextStep: 0,
+	o = init(),
+	nextStep = 0,
+}) => ({
+	o: pipe(nextStep === 0 ? init() : o)(
+		...arrify(get(clip.steps[nextStep], "transform", clip.steps[nextStep]))
+	),
+	nextStep: nextStep === clip.steps.length - 1 ? 0 : nextStep + 1,
 	wait: clip.rate,
 });
