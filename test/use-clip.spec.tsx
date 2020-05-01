@@ -17,6 +17,41 @@ import {
 } from "../src/outline";
 
 type CB = () => void;
+type MS = number;
+
+test("useTimeout", (t) => {
+	const clock = FakeTimers.install();
+
+	const useTimeout = (cb: CB, duration: MS, memo: any) =>
+		useCallback(() => setTimeout(cb, duration), [memo])();
+
+	const frames = ["A", "B", "C"];
+	const frameDurations = [30, 40, 50];
+
+	const PlayerSkeleton = () => {
+		const [currentFrame, setCurrentFrame] = useState(0);
+
+		useTimeout(
+			() => setCurrentFrame((f) => (f + 1) % frames.length),
+			frameDurations[currentFrame],
+			currentFrame
+		);
+
+		return <>{frames[currentFrame]}</>;
+	};
+
+	const { lastFrame } = render(<PlayerSkeleton />);
+
+	times(
+		20,
+		(it) => (
+			t.is(lastFrame(), frames[it % frames.length]),
+			clock.tick(frameDurations[it % frames.length])
+		)
+	);
+
+	clock.uninstall();
+});
 
 test("setTimeout", (t) => {
 	const clock = FakeTimers.install();
@@ -39,8 +74,6 @@ test("setTimeout", (t) => {
 });
 
 test.failing("useTimer", (t) => {
-	type MS = number;
-
 	type Timeout = (cb: CB, ms: MS) => void;
 
 	const makeUseTimer = (to: Timeout) => (cb: CB, duration: MS) => {
