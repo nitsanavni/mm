@@ -29,9 +29,9 @@ test("setTimeout", (t) => {
 		return s;
 	};
 
-	const TimeoutUser = () => <>{useTimeout()}</>;
+	const TimeoutComponent = () => <>{useTimeout()}</>;
 
-	const { lastFrame } = render(<TimeoutUser />);
+	const { lastFrame } = render(<TimeoutComponent />);
 
 	times(5, (it) => (t.is(lastFrame(), `${it}`), clock.tick(100)));
 
