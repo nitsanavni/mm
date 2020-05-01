@@ -21,13 +21,15 @@ type CB = () => void;
 test("setTimeout", (t) => {
 	const clock = FakeTimers.install();
 
-	const TimeoutUser = () => {
+	const useTimeout = () => {
 		const [s, set] = useState(0);
 
 		useCallback(() => setTimeout(() => set((s) => s + 1), 100), [s])();
 
-		return <>{s}</>;
+		return s;
 	};
+
+	const TimeoutUser = () => <>{useTimeout()}</>;
 
 	const { lastFrame } = render(<TimeoutUser />);
 
