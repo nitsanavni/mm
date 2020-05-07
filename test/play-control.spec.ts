@@ -1,9 +1,9 @@
 import test from "ava";
+import { times } from "lodash";
 
 import { next } from "../src/play-control";
 import { edit, addChild } from "../src/outline";
 import { to } from "../src/outline-to-plain";
-import { times } from "lodash";
 
 test("next single step", (t) => {
 	const clip = {

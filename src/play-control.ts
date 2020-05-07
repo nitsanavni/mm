@@ -1,8 +1,8 @@
 import arrify from "arrify";
+import { get } from "lodash";
 
 import { Outline, pipe, init } from "./outline";
 import { Clip } from "./clip";
-import { get } from "lodash";
 
 export type Next = {
 	o: Outline;

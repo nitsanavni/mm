@@ -2,19 +2,11 @@ import React, { FC } from "react";
 import { noop } from "lodash";
 
 import { OutlineLayout } from "./outline-layout.component";
-import { init, pipe } from "./outline";
-import { clips } from "./clips";
-
-type Clip = "move up";
+import { useClip } from "./use-clip";
+import { Clip } from "./clip";
 
 type P = { clip: Clip };
 
-export const Player: FC<P> = ({ clip }) => {
-	return (
-		<OutlineLayout
-			mode="browse"
-			n={pipe(init())(...clips[clip].initialState).visibleRoot}
-			onChange={noop}
-		/>
-	);
-};
+export const Player: FC<P> = ({ clip }) => (
+	<OutlineLayout mode="browse" n={useClip(clip).visibleRoot} onChange={noop} />
+);

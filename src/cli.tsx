@@ -6,8 +6,14 @@ import meow from "meow";
 import { App } from "./ui";
 import { clearScreen } from "./clear-screen";
 
-const cli = meow({ flags: { file: { type: "string", alias: "f" } } });
+const cli = meow({
+	flags: {
+		file: { type: "string", alias: "f" },
+		help: { type: "boolean", alias: "h", default: false },
+	},
+	autoHelp: false,
+});
 
 clearScreen();
 
-render(<App file={cli.flags.file || cli.input[0]} />);
+render(<App file={cli.flags.file || cli.input[0]} help={cli.flags.help} />);

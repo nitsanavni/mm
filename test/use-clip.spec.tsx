@@ -14,10 +14,70 @@ import {
 	moveLeft,
 	moveDown,
 	moveRight,
+	previousSiblin,
 } from "../src/outline";
+import { useClip } from "../src/use-clip";
 
 type CB = () => void;
 type MS = number;
+
+test.todo("variable rate");
+test.todo("unmount -> timeout callback cleared");
+test.todo("higher order step - `type(string)` -> many `edit(sub-string)`");
+
+test("useClip", (t) => {
+	const PlainClipPlayer = ({ clip }: P) => (
+		<PlainOutline n={useClip(clip).visibleRoot} />
+	);
+
+	const clip: Clip = {
+		rate: 160,
+		steps: [
+			[
+				edit("A"),
+				addChild(),
+				edit("1"),
+				addSiblin(),
+				edit("2"),
+				previousSiblin(),
+			],
+			moveRight(),
+			moveLeft(),
+			edit(""),
+			edit("h"),
+			edit("he"),
+			edit("hel"),
+			edit("hell"),
+			edit("hello"),
+		],
+	};
+
+	const clock = FakeTimers.install();
+
+	const { lastFrame } = render(<PlainClipPlayer clip={clip} />);
+
+	const expected = [
+		"A\n  1\n  2",
+		"A\n  2\n    1",
+		"A\n  2\n  1",
+		"A\n  2\n  ·",
+		"A\n  2\n  h",
+		"A\n  2\n  he",
+		"A\n  2\n  hel",
+		"A\n  2\n  hell",
+		"A\n  2\n  hello",
+	];
+
+	times(
+		40,
+		(it) => (
+			t.is(lastFrame(), expected[it % expected.length], `${it}`),
+			clock.tick(clip.rate)
+		)
+	);
+
+	clock.uninstall();
+});
 
 test("useTimeout", (t) => {
 	const clock = FakeTimers.install();
