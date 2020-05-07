@@ -29,7 +29,7 @@
 		"tslint:check": "tslint -p .",
 		"eslint": "eslint --ext ts --ext tsx --fix .",
 		"eslint:check": "eslint --ext ts --ext tsx .",
-		"preinstall": "git config --local include.path ../.gitconfig"
+		"plop": "plop --plopfile plop/plopfile.js"
 	},
 	"nyc": {
 		"exclude": []

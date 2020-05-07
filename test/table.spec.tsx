@@ -1,3 +1,3 @@
 import test from "ava";
 
-test("");
+test("single", (t) => {});
