@@ -80,6 +80,7 @@
 		"ink-testing-library": "^1.0.3",
 		"lint-staged": "^10.1.2",
 		"nyc": "^15.0.1",
+		"plop": "^2.6.0",
 		"prettier": "2.0.4",
 		"semantic-release": "^17.0.4",
 		"source-map-support": "^0.5.19",
