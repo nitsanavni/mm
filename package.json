@@ -29,7 +29,8 @@
 		"tslint:check": "tslint -p .",
 		"eslint": "eslint --ext ts --ext tsx --fix .",
 		"eslint:check": "eslint --ext ts --ext tsx .",
-		"plop": "plop --plopfile plop/plopfile.js"
+		"plop:build": "tsc -p plop",
+		"plop": "plop --plopfile plop/plopfile.js --dest ."
 	},
 	"nyc": {
 		"exclude": []
@@ -76,6 +77,8 @@
 		"eslint-config-xo-react": "^0.23.0",
 		"eslint-plugin-react": "^7.19.0",
 		"eslint-plugin-react-hooks": "^3.0.0",
+		"execa": "^4.0.0",
+		"get-stream": "^5.1.0",
 		"husky": "^4.2.3",
 		"ink-testing-library": "^1.0.3",
 		"lint-staged": "^10.1.2",
