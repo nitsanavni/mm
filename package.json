@@ -30,7 +30,7 @@
 		"eslint": "eslint --ext ts --ext tsx --fix .",
 		"eslint:check": "eslint --ext ts --ext tsx .",
 		"plop:build": "tsc -p plop",
-		"preplop": "if [ -f plop/plopfile.js ]; then npm run plop:build fi",
+		"preplop": "[ -f plop/plopfile.js ] || npm run plop:build",
 		"plop": "plop --plopfile plop/plopfile.js --dest ."
 	},
 	"nyc": {
