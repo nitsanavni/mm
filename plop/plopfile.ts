@@ -29,12 +29,7 @@ export default function (plop: NodePlopAPI) {
 			{
 				type: "add",
 				path,
-				template: `{{#if isReact}}import React from "react";
-{{/if}}
-import test from "ava";
-
-test("", (t) => {});
-`,
+				templateFile: "templates/test.hbs",
 			},
 			{ type: "git add" },
 		],
