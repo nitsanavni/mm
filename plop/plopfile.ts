@@ -1,8 +1,7 @@
-import { NodePlopAPI } from "plop";
+import { NodePlopAPI as Plop } from "plop";
 import execa from "execa";
-import getStream from "get-stream";
 
-export default function (plop: NodePlopAPI) {
+export default function (plop: Plop) {
 	const path = "test/{{name}}.spec.{{ts}}";
 
 	plop.setActionType("git add", async (answers: any, _, p) => {

@@ -79,7 +79,6 @@
 		"eslint-plugin-react": "^7.19.0",
 		"eslint-plugin-react-hooks": "^3.0.0",
 		"execa": "^4.0.0",
-		"get-stream": "^5.1.0",
 		"husky": "^4.2.3",
 		"ink-testing-library": "^1.0.3",
 		"lint-staged": "^10.1.2",
