@@ -25,7 +25,7 @@ const ColumnSeparator = memo(({ length = 1 }: { length?: number }) => (
 	<div>{times(length, () => "|")}</div>
 ));
 
-const Table = ({ cells = [[]], doEdit = false }: Props) => (
+const Table = ({ cells = [[]] }: Props) => (
 	<Box flexDirection="row">
 		{cells.map((column) => (
 			<>
