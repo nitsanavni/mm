@@ -1,4 +1,4 @@
-mindmaps for the cli
+mindmap for the cli
 
 **note: this is still in initial stages of development, data may be lost, I recommend backing up your files**
 
