@@ -30,7 +30,7 @@ test("useClip", (t) => {
 		<PlainOutline n={useClip(clip).visibleRoot} />
 	);
 
-	const clip: Clip = {
+	const clipFixture: Clip = {
 		rate: 160,
 		steps: [
 			[
@@ -54,7 +54,7 @@ test("useClip", (t) => {
 
 	const clock = FakeTimers.install();
 
-	const { lastFrame } = render(<PlainClipPlayer clip={clip} />);
+	const { lastFrame } = render(<PlainClipPlayer clip={clipFixture} />);
 
 	const expected = [
 		"A\n  1\n  2",
@@ -72,7 +72,7 @@ test("useClip", (t) => {
 		40,
 		(it) => (
 			t.is(lastFrame(), expected[it % expected.length], `${it}`),
-			clock.tick(clip.rate)
+			clock.tick(clipFixture.rate)
 		)
 	);
 
@@ -119,7 +119,7 @@ test("setTimeout", (t) => {
 	const useTimeout = () => {
 		const [s, set] = useState(0);
 
-		useCallback(() => setTimeout(() => set((s) => s + 1), 100), [s])();
+		useCallback(() => setTimeout(() => set((state) => state + 1), 100), [s])();
 
 		return s;
 	};
@@ -183,7 +183,7 @@ test("play a clip", (t) => {
 
 	const useTimer = (cb: CB) => ((tick = cb), (tock = cb));
 
-	const useClip = (clip: Clip) => {
+	const useClipTest = (clip: Clip) => {
 		const [state, setState] = useState(next({ clip }));
 		useTimer(() => setState(next({ ...state, clip })));
 
@@ -191,10 +191,10 @@ test("play a clip", (t) => {
 	};
 
 	const PlainClipPlayer = ({ clip }: P) => (
-		<PlainOutline n={useClip(clip).visibleRoot} />
+		<PlainOutline n={useClipTest(clip).visibleRoot} />
 	);
 
-	const clip: Clip = {
+	const clipFixture: Clip = {
 		rate: 0,
 		steps: [
 			[
@@ -215,7 +215,7 @@ test("play a clip", (t) => {
 		],
 	};
 
-	const { lastFrame } = render(<PlainClipPlayer {...{ clip }} />);
+	const { lastFrame } = render(<PlainClipPlayer {...{ clip: clipFixture }} />);
 
 	const expectedFrames = [
 		"A\n  1\n  2\n  3\n    move me", // init
