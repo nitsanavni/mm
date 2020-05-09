@@ -28,7 +28,7 @@ export default function (plop: Plop) {
 			{
 				type: "add",
 				path,
-				templateFile: "templates/test.hbs",
+				templateFile: "templates/test.handlebars",
 			},
 			{ type: "git add" },
 		],

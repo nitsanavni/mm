@@ -43,6 +43,8 @@ const Table = ({ cells = [[]] }: Props) => (
 	</Box>
 );
 
+test.todo("takes input on its own, as long as serves as delegate");
+
 test("focus POC", (t) => {
 	const { lastFrame } = render(
 		<Table
