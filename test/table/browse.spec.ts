@@ -1,24 +1,55 @@
-import test from "ava";
+import anyTest, { TestInterface } from "ava";
 
 import { Table } from "../../src/table/table";
 import { to as toPlain } from "../../src/table/to-plain";
-import { go } from "../../src/table/browse";
+import {
+	up,
+	top,
+	down,
+	Transform,
+	right,
+	left,
+	bottom,
+	toRightmost,
+	toLeftmost,
+} from "../../src/table/browse";
 
-const focusHighlight = (value: string) => `*${value}*`;
+const test = anyTest as TestInterface<{ table: Table }>;
+
+const focusHighlight = () => "X";
 const to = (table: Table) => toPlain(table, { focusHighlight });
 
-test("go", (t) => {
-	const table: Table = {
-		columns: [
-			[{ value: "A", focused: true }, { value: "C" }],
-			[{ value: "B" }, { value: "D" }],
-		],
-		focus: { column: 0, row: 0 },
-	};
+const makeTable: () => Table = () => ({
+	columns: [
+		[{ value: "O", focused: true }, { value: "O" }, { value: "O" }],
+		[{ value: "O" }, { value: "O" }, { value: "O" }],
+		[{ value: "O" }, { value: "O" }, { value: "O" }],
+		[{ value: "O" }, { value: "O" }, { value: "O" }],
+	],
+	focus: { column: 0, row: 0 },
+});
 
-	t.is(to(table), "|*A*|B|\n|C|D|");
+test.beforeEach((t) => {
+	t.context.table = makeTable();
+});
 
-	go(table)({ column: 1, row: 1 });
+test("directional", (t) => {
+	const sequence: [Transform, string][] = [
+		[up, "|X|O|O|O|\n|O|O|O|O|\n|O|O|O|O|"],
+		[down, "|O|O|O|O|\n|X|O|O|O|\n|O|O|O|O|"],
+		[down, "|O|O|O|O|\n|O|O|O|O|\n|X|O|O|O|"],
+		[down, "|O|O|O|O|\n|O|O|O|O|\n|X|O|O|O|"],
+		[right, "|O|O|O|O|\n|O|O|O|O|\n|O|X|O|O|"],
+		[top, "|O|X|O|O|\n|O|O|O|O|\n|O|O|O|O|"],
+		[left, "|X|O|O|O|\n|O|O|O|O|\n|O|O|O|O|"],
+		[bottom, "|O|O|O|O|\n|O|O|O|O|\n|X|O|O|O|"],
+		[toRightmost, "|O|O|O|O|\n|O|O|O|O|\n|O|O|O|X|"],
+		[toLeftmost, "|O|O|O|O|\n|O|O|O|O|\n|X|O|O|O|"],
+	];
 
-	t.is(to(table), "|A|B|\n|C|*D*|");
+	sequence.forEach(
+		([action, result]) => (
+			action(t.context.table), t.is(to(t.context.table), result)
+		)
+	);
 });
