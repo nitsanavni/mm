@@ -1,3 +1,4 @@
 dist
 *.handlebars
 plop/plopfile.js
+.nyc_output

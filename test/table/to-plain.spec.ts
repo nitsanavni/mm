@@ -2,12 +2,16 @@ import test from "ava";
 
 import { to } from "../../src/table/to-plain";
 
-test("single cell", (t) => {
-	t.is(to({ columns: [[{ value: "X" }]] }), "|X|");
-});
-
-test("single column", (t) => {
-	t.is(to({ columns: [[{ value: "X" }, { value: "Y" }]] }), "|X|\n|Y|");
+test("padding", (t) => {
+	t.is(
+		to(
+			{
+				columns: [[{ value: "short" }, { value: "l  o  n  g" }]],
+			},
+			{ pad: true }
+		),
+		"|short     |\n|l  o  n  g|"
+	);
 });
 
 test("multi", (t) => {
@@ -20,4 +24,12 @@ test("multi", (t) => {
 		}),
 		"|C1R1|C2R1|\n|C1R2|C2R2|"
 	);
+});
+
+test("single column", (t) => {
+	t.is(to({ columns: [[{ value: "X" }, { value: "Y" }]] }), "|X|\n|Y|");
+});
+
+test("single cell", (t) => {
+	t.is(to({ columns: [[{ value: "X" }]] }), "|X|");
 });
