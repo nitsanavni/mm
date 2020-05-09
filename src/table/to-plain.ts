@@ -1,4 +1,4 @@
-import { chain, map } from "lodash";
+import { chain } from "lodash";
 
 import { Table } from "./table";
 
