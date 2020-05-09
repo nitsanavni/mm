@@ -1,5 +1,6 @@
-import { Outline, OutlineNode } from "./outline";
 import { repeat, isEmpty, isNil } from "lodash";
+
+import { Outline, OutlineNode } from "./outline";
 
 const renderNode: (n?: OutlineNode, l?: number) => string = (
 	n?: OutlineNode,
@@ -11,10 +12,10 @@ const renderNode: (n?: OutlineNode, l?: number) => string = (
 
 	const indent = repeat("  ", l);
 	const label = isEmpty(n.label) ? "·" : n.label;
-	const NL = l === 0 ? "" : "\n";
+	const newLine = l === 0 ? "" : "\n";
 
 	return (
-		NL +
+		newLine +
 		indent +
 		label +
 		renderNode(n.firstChild, l + 1) +

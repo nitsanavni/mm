@@ -1,5 +1,6 @@
 node_modules/
 dist/
 .idea/
+.vscode/
 .eslintcache
 .nyc_output/
