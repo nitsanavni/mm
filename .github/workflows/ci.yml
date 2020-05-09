@@ -19,7 +19,7 @@ jobs:
       - name: commitlint
         run: npx commitlint -f origin/master -V
       - name: lint n' style
-        run: npm run style:check && npm run tslint:check && npm run eslint:check
+        run: npm run lint:check
       - name: build
         run: npm run build
       - name: test

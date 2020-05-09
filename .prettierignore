@@ -1,2 +1,3 @@
 dist
-*.hbs
+*.handlebars
+plop/plopfile.js
