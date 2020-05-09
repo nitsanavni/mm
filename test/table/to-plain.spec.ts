@@ -1,17 +1,16 @@
 import test from "ava";
 
-import { Table } from "../src/table/table";
-import { to } from "../src/table/to-plain";
+import { to } from "../../src/table/to-plain";
 
-test("to plain text - single cell", (t) => {
+test("single cell", (t) => {
 	t.is(to({ columns: [[{ value: "X" }]] }), "|X|");
 });
 
-test("to plain text - single column", (t) => {
+test("single column", (t) => {
 	t.is(to({ columns: [[{ value: "X" }, { value: "Y" }]] }), "|X|\n|Y|");
 });
 
-test("to plain text - multi", (t) => {
+test("multi", (t) => {
 	t.is(
 		to({
 			columns: [
