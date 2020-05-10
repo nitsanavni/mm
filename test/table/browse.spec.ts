@@ -14,6 +14,7 @@ import {
 	toLeftmost,
 } from "../../src/table/browse";
 
+// TODO - there's only one test here, no need for typed Context
 const test = anyTest as TestInterface<{ table: Table }>;
 
 const focusHighlight = () => "█";

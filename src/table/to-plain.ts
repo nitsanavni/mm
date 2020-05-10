@@ -1,4 +1,4 @@
-import { chain, padEnd, map, join } from "lodash";
+import { chain, padEnd, map, join, isNil } from "lodash";
 
 import { Table, Cell } from "./table";
 
@@ -9,13 +9,15 @@ type Opts = {
 	focusHighlight?: Highlight;
 };
 
+const toEmpty = (v: string | undefined) => (isNil(v) ? "" : v);
+
 const value = (padToLength: number | undefined, focusHighlight: Highlight) => (
 	cell: Cell
 ) =>
 	padEnd(
-		cell.focused && focusHighlight && cell.value
-			? focusHighlight(cell.value)
-			: cell.value,
+		cell.focused && focusHighlight
+			? focusHighlight(toEmpty(cell.value))
+			: toEmpty(cell.value),
 		padToLength
 	);
 
