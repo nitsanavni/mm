@@ -9,15 +9,15 @@ type Opts = {
 	focusHighlight?: Highlight;
 };
 
-const toEmpty = (v: string | undefined) => (isNil(v) ? "" : v);
+const stringify = (v: string | undefined) => (isNil(v) ? "" : v);
 
 const value = (padToLength: number | undefined, focusHighlight: Highlight) => (
 	cell: Cell
 ) =>
 	padEnd(
 		cell.focused && focusHighlight
-			? focusHighlight(toEmpty(cell.value))
-			: toEmpty(cell.value),
+			? focusHighlight(stringify(cell.value))
+			: stringify(cell.value),
 		padToLength
 	);
 

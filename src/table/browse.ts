@@ -1,5 +1,6 @@
 import { Table, Position } from "./table";
 import { cellAt } from "./cell-at";
+import { Transform } from "./transform";
 
 const go = (table: Table) => (to: Position) => (
 	((at) => (
@@ -11,8 +12,6 @@ const go = (table: Table) => (to: Position) => (
 );
 
 type Direction = (table: Table) => (from: Position) => Position;
-
-export type Transform = (table: Table) => Table;
 
 const above: Direction = () => ({ row, column }) => ({
 	column,

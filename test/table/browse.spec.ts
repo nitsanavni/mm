@@ -6,13 +6,13 @@ import {
 	up,
 	top,
 	down,
-	Transform,
 	right,
 	left,
 	bottom,
 	toRightmost,
 	toLeftmost,
 } from "../../src/table/browse";
+import { Transform } from "../../src/table/transform";
 
 // TODO - there's only one test here, no need for typed Context
 const test = anyTest as TestInterface<{ table: Table }>;
