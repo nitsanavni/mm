@@ -16,15 +16,15 @@ import {
 
 const test = anyTest as TestInterface<{ table: Table }>;
 
-const focusHighlight = () => "X";
+const focusHighlight = () => "█";
 const to = (table: Table) => toPlain(table, { focusHighlight });
 
 const makeTable: () => Table = () => ({
 	columns: [
-		[{ value: "O", focused: true }, { value: "O" }, { value: "O" }],
-		[{ value: "O" }, { value: "O" }, { value: "O" }],
-		[{ value: "O" }, { value: "O" }, { value: "O" }],
-		[{ value: "O" }, { value: "O" }, { value: "O" }],
+		[{ value: " ", focused: true }, { value: " " }, { value: " " }],
+		[{ value: " " }, { value: " " }, { value: " " }],
+		[{ value: " " }, { value: " " }, { value: " " }],
+		[{ value: " " }, { value: " " }, { value: " " }],
 	],
 	focus: { column: 0, row: 0 },
 });
@@ -34,21 +34,21 @@ test.beforeEach((t) => {
 });
 
 test("directional", (t) => {
-	const sequence: [Transform, string][] = [
-		[up, "|X|O|O|O|\n|O|O|O|O|\n|O|O|O|O|"],
-		[down, "|O|O|O|O|\n|X|O|O|O|\n|O|O|O|O|"],
-		[down, "|O|O|O|O|\n|O|O|O|O|\n|X|O|O|O|"],
-		[down, "|O|O|O|O|\n|O|O|O|O|\n|X|O|O|O|"],
-		[right, "|O|O|O|O|\n|O|O|O|O|\n|O|X|O|O|"],
-		[top, "|O|X|O|O|\n|O|O|O|O|\n|O|O|O|O|"],
-		[left, "|X|O|O|O|\n|O|O|O|O|\n|O|O|O|O|"],
-		[bottom, "|O|O|O|O|\n|O|O|O|O|\n|X|O|O|O|"],
-		[toRightmost, "|O|O|O|O|\n|O|O|O|O|\n|O|O|O|X|"],
-		[toLeftmost, "|O|O|O|O|\n|O|O|O|O|\n|X|O|O|O|"],
+	const sequence: [string, Transform][] = [
+		["|█| | | |\n| | | | |\n| | | | |", up],
+		["| | | | |\n|█| | | |\n| | | | |", down],
+		["| | | | |\n| | | | |\n|█| | | |", down],
+		["| | | | |\n| | | | |\n|█| | | |", down],
+		["| | | | |\n| | | | |\n| |█| | |", right],
+		["| |█| | |\n| | | | |\n| | | | |", top],
+		["|█| | | |\n| | | | |\n| | | | |", left],
+		["| | | | |\n| | | | |\n|█| | | |", bottom],
+		["| | | | |\n| | | | |\n| | | |█|", toRightmost],
+		["| | | | |\n| | | | |\n|█| | | |", toLeftmost],
 	];
 
 	sequence.forEach(
-		([action, result]) => (
+		([result, action]) => (
 			action(t.context.table), t.is(to(t.context.table), result)
 		)
 	);
