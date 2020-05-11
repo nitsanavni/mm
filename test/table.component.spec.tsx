@@ -57,6 +57,7 @@ test("focus POC", (t) => {
 
 	t.is(lastFrame(), "|C1     |C2   |\n|*hello*|world|");
 });
+
 test("empty", (t) => {
 	const { lastFrame } = render(<Table />);
 
