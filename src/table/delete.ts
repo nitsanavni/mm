@@ -2,8 +2,15 @@ import { pullAt } from "lodash";
 
 import { Transform } from "./transform";
 import { cellAt } from "./cell-at";
-import { left } from "./browse";
+import { left, up } from "./browse";
 import { reset } from "./init";
+
+export const deleteRow: Transform = (table) =>
+	table.columns[0].length === 1
+		? reset(table)
+		: (table.columns.forEach((column) => pullAt(column, table.focus!.row)),
+		  up(table),
+		  table);
 
 export const deleteColumn: Transform = (table) =>
 	table.columns.length === 1

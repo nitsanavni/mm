@@ -2,9 +2,29 @@ import test from "ava";
 
 import { Table } from "../../src/table/table";
 import { to } from "./to-plain-with-focus";
-import { deleteCellValue, deleteColumn } from "../../src/table/delete";
+import {
+	deleteCellValue,
+	deleteColumn,
+	deleteRow,
+} from "../../src/table/delete";
 import { moveDown, moveRight } from "../../src/table/move";
 import { init } from "../../src/table/init";
+
+test("row", (t) => {
+	const table = {
+		columns: [
+			[{ value: "1" }, { value: "X" }, { value: "5" }],
+			[{ value: "2" }, { value: "X", focused: true }, { value: "6" }],
+			[{ value: "3" }, { value: "X" }, { value: "7" }],
+			[{ value: "4" }, { value: "X" }, { value: "8" }],
+		],
+		focus: { column: 1, row: 1 },
+	};
+
+	t.is(to(table), "|1|2|3|4|\n|X|*X*|X|X|\n|5|6|7|8|");
+	deleteRow(table);
+	t.is(to(table), "|1|*2*|3|4|\n|5|6|7|8|");
+});
 
 test("column - single", (t) => {
 	const table: Table = {
