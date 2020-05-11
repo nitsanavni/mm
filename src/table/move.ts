@@ -5,6 +5,9 @@ import { Table } from "./table";
 import { Transform } from "./transform";
 import { nudgeRight, nudgeLeft } from "../nudge";
 
+// TODO - this code is highly symmetric, but am not sure if
+//        extracting the symmetry would make it more readable
+
 export const moveDown: Transform = (table: Table) => (
 	(table.focus!.row = reduce(
 		table.columns,
