@@ -10,6 +10,30 @@ import {
 import { moveDown, moveRight } from "../../src/table/move";
 import { init } from "../../src/table/init";
 
+test("row - empty", (t) => {
+	const table = init();
+
+	t.is(to(table), "|**|");
+	deleteRow(table);
+	t.is(to(table), "|**|");
+});
+
+test("row - single", (t) => {
+	const table: Table = {
+		columns: [
+			[{ value: "X" }],
+			[{ value: "X", focused: true }],
+			[{ value: "X" }],
+			[{ value: "X" }],
+		],
+		focus: { column: 1, row: 1 },
+	};
+
+	t.is(to(table), "|X|*X*|X|X|");
+	deleteRow(table);
+	t.is(to(table), "|**|");
+});
+
 test("row", (t) => {
 	const table = {
 		columns: [
