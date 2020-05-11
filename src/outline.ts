@@ -1,5 +1,7 @@
 import { reduce, get, pullAt, unset, findIndex, first, last } from "lodash";
+
 import { Outline } from "./outline.component";
+import { nudgeRight, nudgeLeft } from "./nudge";
 
 export type OutlineNode = {
 	key: string;
@@ -241,11 +243,6 @@ export const childrenArray = (p?: OutlineNode) => {
 	return ret;
 };
 
-const swap = <T>(array: T[], i: number, j: number) => {
-	// https://stackoverflow.com/questions/872310/javascript-swap-array-elements
-	[array[i], array[j]] = [array[j], array[i]];
-};
-
 const connect = (siblins: OutlineNode[]) => {
 	const f = first(siblins)!;
 	const l = last(siblins)!;
@@ -265,9 +262,6 @@ const connect = (siblins: OutlineNode[]) => {
 	});
 };
 
-// https://github.com/lodash/lodash/issues/2173#issuecomment-406597580
-const rotateLeft = <T>(a: T[]) => a.push(a.shift()!);
-
 export const moveUp = () => (o: Outline) => {
 	const f = o.focus as OutlineNode;
 
@@ -275,19 +269,12 @@ export const moveUp = () => (o: Outline) => {
 
 	const pos = findIndex(array, (n) => n.focused);
 
-	if (pos === 0) {
-		rotateLeft(array);
-	} else {
-		swap(array, pos, pos - 1);
-	}
+	nudgeLeft(array, pos);
 
 	connect(array);
 
 	return o;
 };
-
-// https://github.com/lodash/lodash/issues/2173#issuecomment-406597580
-const rotateRight = <T>(a: T[]) => a.unshift(a.pop()!);
 
 export const moveDown = () => (o: Outline) => {
 	const f = o.focus as OutlineNode;
@@ -295,11 +282,7 @@ export const moveDown = () => (o: Outline) => {
 
 	const pos = findIndex(array, (n) => n.focused);
 
-	if (pos === array.length - 1) {
-		rotateRight(array);
-	} else {
-		swap(array, pos, pos + 1);
-	}
+	nudgeRight(array, pos);
 
 	connect(array);
 

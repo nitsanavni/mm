@@ -1,13 +1,10 @@
 import test from "ava";
 
 import { Table } from "../../src/table/table";
-import { to as toPlain } from "../../src/table/to-plain";
 import { addColumn, addRow } from "../../src/table/add";
 import { right, down, up } from "../../src/table/browse";
 import { edit } from "../../src/table/edit";
-
-const to = (table: Table) =>
-	toPlain(table, { focusHighlight: (v) => `*${v}*` });
+import { to } from "./to-plain-with-focus";
 
 test("row", (t) => {
 	const table: Table = {
