@@ -31,6 +31,7 @@ export type Table = {
 // - deleteRow
 // - deleteColumn
 // not mvp:
+// - transpose!
 // - collapse
 //   - keep only first cell
 //   - keep only first rows
