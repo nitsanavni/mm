@@ -5,6 +5,7 @@ import { isEmpty, map } from "lodash";
 import chalk from "chalk";
 
 import { OutlineNode, Mode, childrenArray } from "./outline";
+import { Table } from "./table/component";
 
 const meta = chalk.dim.yellow;
 const focus = chalk.yellowBright.bold.underline;
@@ -33,7 +34,12 @@ type Props = {
 const Node = ({ n, onChange, mode, prefix = "" }: Props) => (
 	<>
 		{n.collapsedLeft ? collapse : prefix}
-		{n.focused && mode === "edit node" ? (
+		{n.table ? (
+			<Table
+				columns={n.table.columns}
+				doEdit={n.focused && mode === "edit node"}
+			/>
+		) : n.focused && mode === "edit node" ? (
 			<Color yellow={true} bold={true}>
 				<InkTextInput onChange={onChange} value={n.label} />
 			</Color>

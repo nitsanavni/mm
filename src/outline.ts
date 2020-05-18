@@ -2,11 +2,14 @@ import { reduce, get, pullAt, unset, findIndex, first, last } from "lodash";
 
 import { Outline } from "./outline.component";
 import { nudgeRight, nudgeLeft } from "./nudge";
+import { Table } from "./table/table";
+import { init as initTable } from "./table/init";
 
 export type OutlineNode = {
 	key: string;
 	label: string;
 	focused: boolean;
+	table?: Table;
 	collapsed?: boolean;
 	collapsedLeft?: boolean;
 	parent?: OutlineNode;
@@ -30,6 +33,10 @@ export type Outline = {
 
 export type Transform = (o: Outline) => Outline;
 
+export const insertTable = () => (o: Outline) => (
+	addChild()(o), (o.focus.table = initTable()), o
+);
+
 const changeFocusTo = (n?: OutlineNode) => (o: Outline) => {
 	if (!n) {
 		return o;
@@ -45,7 +52,7 @@ const changeFocusTo = (n?: OutlineNode) => (o: Outline) => {
 
 const getParent = (n: OutlineNode) => get(n, "parent", n);
 
-export const home: () => Transform = () => (o: Outline) =>
+export const home: () => Transform = () => (o) =>
 	changeFocusTo(o.visibleRoot)(o);
 
 export const pipe = (outline: Outline) => (...transforms: Transform[]) =>

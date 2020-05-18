@@ -24,6 +24,7 @@ import {
 	expand,
 	toggleCollapseLeft,
 	Outline as OutlineModel,
+	insertTable,
 } from "./outline";
 import { OutlineLayout } from "./outline-layout.component";
 import { OutlineView } from "./outline-view-mode";
@@ -31,7 +32,7 @@ import { PlainOutline } from "./plain-outline";
 import { from } from "./plain-from-outline";
 import { to } from "./outline-to-plain";
 
-type Key = "space" | "escape" | "alt return" | "q";
+type Key = "space" | "escape" | "alt return" | "q" | "|";
 
 const write = (file: string | undefined, o: OutlineModel) =>
 	file && writeFile(file, to(o), noop);
@@ -79,6 +80,8 @@ const useMyInput = (handler: (key: Key) => void) => {
 			handler("alt return");
 		} else if (input === "q") {
 			handler("q");
+		} else if (input === "|") {
+			handler("|");
 		}
 	});
 };
@@ -113,6 +116,7 @@ export const Outline = ({ file }: { file?: string }) => {
 				escape: () => set({ o: home()(o) }),
 				"alt return": noop,
 				q: () => process.exit(),
+				"|": () => set({ o: { ...insertTable()(o) } }),
 			}[k]()
 	);
 
