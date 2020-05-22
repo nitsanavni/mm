@@ -19,8 +19,8 @@
 	},
 	"scripts": {
 		"hack": "FORCE_COLOR=1 parallel --line-buffer npm run {}:watch ::: build test",
-		"build": "tsc",
-		"build:watch": "tsc -w --preserveWatchOutput",
+		"build": "tsc --incremental",
+		"build:watch": "tsc -w --preserveWatchOutput --incremental",
 		"test": "nyc ava dist/test/*.spec.js dist/test/**/*.spec.js",
 		"test:watch": "ava -w dist/test/*.spec.js dist/test/**/*.spec.js",
 		"lint:check": "FORCE_COLOR=1 parallel --line-buffer npm run {}:check ::: style tslint eslint",
@@ -91,7 +91,7 @@
 		"strip-ansi": "^6.0.0",
 		"ts-node": "^8.9.0",
 		"tslint": "^6.1.1",
-		"typescript": "^3.8.3"
+		"typescript": "^3.9.3"
 	},
 	"husky": {
 		"hooks": {
