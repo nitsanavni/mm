@@ -1,16 +1,58 @@
 import React, { useState } from "react";
 import test from "ava";
 import { render } from "ink-testing-library";
-import { noop, camelCase, lowerCase, trim } from "lodash";
+import { noop, camelCase, lowerCase, trim, upperCase, snakeCase } from "lodash";
 
 type TextProps = { text: string };
 const Text = ({ text }: TextProps) => <>{text}</>;
 
-type TextCb = (text: string) => void;
-type OnControl = (cb: TextCb) => void;
+type CB<T> = (value: T) => void;
+type ON<T> = CB<CB<T>>;
+
+type TextCb = CB<string>;
+type OnTextCb = ON<string>;
+
+type Transform = (text: string) => string;
+
+test.todo("subscribe to control stream");
+
+test("set of supported transforms, aka controls", (t) => {
+	type Control = "upper" | "lower" | "camel" | "snake" | "reset";
+
+	const reset = () => "initial state";
+
+	const controlMap: { [key in Control]?: Transform } = {
+		upper: upperCase,
+		camel: camelCase,
+		lower: lowerCase,
+		snake: snakeCase,
+		reset,
+	};
+
+	const makeComponent = (onControl: ON<Control>) => () => {
+		const [text, setText] = useState(reset);
+
+		onControl((control: Control) => setText(controlMap[control]!(text)));
+
+		return <>{text}</>;
+	};
+
+	let cb: CB<Control>;
+	const Component = makeComponent((controlCb: CB<Control>) => (cb = controlCb));
+	const { lastFrame } = render(<Component />);
+
+	t.is(lastFrame(), "initial state");
+
+	cb!("snake");
+
+	t.is(lastFrame(), "initial_state");
+
+	cb!("camel");
+
+	t.is(lastFrame(), "initialState");
+});
 
 test("transform text", (t) => {
-	type Transform = (text: string) => string;
 	type TransformCb = (transform: Transform) => void;
 	type OnTransform = (transformCb: TransformCb) => void;
 
@@ -47,7 +89,7 @@ test("sanity", (t) => {
 });
 
 test("skeleton take 2", (t) => {
-	const makeStateComponent = (onControl: OnControl = noop) => () => {
+	const makeStateComponent = (onControl: OnTextCb = noop) => () => {
 		const [text, setText] = useState("initial");
 
 		onControl(setText);
@@ -77,7 +119,7 @@ test("skeleton take 2", (t) => {
 
 test("contolled mindmap skeleton", (t) => {
 	// maybe `onControl` shouldn't be a prop?
-	type StateProps = { onControl?: OnControl };
+	type StateProps = { onControl?: OnTextCb };
 
 	const State = ({ onControl = noop }: StateProps) => {
 		const [text, set] = useState("initial");
