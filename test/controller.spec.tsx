@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import test from "ava";
 import { render } from "ink-testing-library";
 import { noop, camelCase, lowerCase, trim, upperCase, snakeCase } from "lodash";
+import { Subject } from "rxjs";
 
 type TextProps = { text: string };
 const Text = ({ text }: TextProps) => <>{text}</>;
@@ -14,29 +15,51 @@ type OnTextCb = ON<string>;
 
 type Transform = (text: string) => string;
 
-test.todo("subscribe to control stream");
+type Control = "upper" | "lower" | "camel" | "snake" | "reset";
+
+const reset = () => "initial state";
+
+const controlMap: { [key in Control]?: Transform } = {
+	upper: upperCase,
+	camel: camelCase,
+	lower: lowerCase,
+	snake: snakeCase,
+	reset,
+};
+
+const makeComponent = (onControl: ON<Control>) => () => {
+	const [text, setText] = useState(reset);
+
+	useMemo(
+		() =>
+			onControl((control: Control) =>
+				setText((txt) => controlMap[control]!(txt))
+			),
+		[]
+	);
+
+	return <>{text}</>;
+};
+
+test("subscribe to control stream", (t) => {
+	const subject = new Subject<Control>();
+	const on: ON<Control> = (cb) => subject.subscribe(cb);
+	const next: CB<Control> = (control) => subject.next(control);
+	const Component = makeComponent(on);
+	const { lastFrame } = render(<Component />);
+
+	t.is(lastFrame(), "initial state");
+
+	next("snake");
+
+	t.is(lastFrame(), "initial_state");
+
+	next("camel");
+
+	t.is(lastFrame(), "initialState");
+});
 
 test("set of supported transforms, aka controls", (t) => {
-	type Control = "upper" | "lower" | "camel" | "snake" | "reset";
-
-	const reset = () => "initial state";
-
-	const controlMap: { [key in Control]?: Transform } = {
-		upper: upperCase,
-		camel: camelCase,
-		lower: lowerCase,
-		snake: snakeCase,
-		reset,
-	};
-
-	const makeComponent = (onControl: ON<Control>) => () => {
-		const [text, setText] = useState(reset);
-
-		onControl((control: Control) => setText(controlMap[control]!(text)));
-
-		return <>{text}</>;
-	};
-
 	let cb: CB<Control>;
 	const Component = makeComponent((controlCb: CB<Control>) => (cb = controlCb));
 	const { lastFrame } = render(<Component />);
@@ -134,9 +157,9 @@ test("contolled mindmap skeleton", (t) => {
 	let ourCb: (text: string) => void;
 	const testOnControl = (cb: (text: string) => void) => (ourCb = cb);
 
-	const Control = () => <State onControl={testOnControl} />;
+	const ControlComponent = () => <State onControl={testOnControl} />;
 
-	const { lastFrame: controlLastFrame } = render(<Control />);
+	const { lastFrame: controlLastFrame } = render(<ControlComponent />);
 
 	t.is(controlLastFrame(), "initial");
 

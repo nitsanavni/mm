@@ -55,7 +55,8 @@
 		"ink-text-input": "^3.2.2",
 		"lodash": "^4.17.15",
 		"meow": "^6.1.0",
-		"react": "^16.13.1"
+		"react": "^16.13.1",
+		"rxjs": "^6.5.5"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.9.0",
