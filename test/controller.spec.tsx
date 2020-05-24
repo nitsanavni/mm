@@ -15,6 +15,7 @@ type OnTextCb = ON<string>;
 
 type Transform = (text: string) => string;
 
+// rename to 'Action'?
 type Control = "upper" | "lower" | "camel" | "snake" | "reset";
 
 const reset = () => "initial state";
@@ -40,6 +41,9 @@ const makeComponent = (onControl: ON<Control>) => () => {
 
 	return <>{text}</>;
 };
+
+test.todo("component could know rxjs itself, instead of callbacks");
+test.todo("takeUntil to prevent leaks?");
 
 test("subscribe to control stream", (t) => {
 	const subject = new Subject<Control>();
@@ -111,7 +115,7 @@ test("sanity", (t) => {
 	t.is(render(<Text text="hello" />).lastFrame(), "hello");
 });
 
-test("skeleton take 2", (t) => {
+test("skeleton take 2, onControl is not a prop", (t) => {
 	const makeStateComponent = (onControl: OnTextCb = noop) => () => {
 		const [text, setText] = useState("initial");
 

@@ -30,8 +30,8 @@ import { OutlineView } from "./outline-view-mode";
 import { PlainOutline } from "./plain-outline";
 import { from } from "./plain-from-outline";
 import { to } from "./outline-to-plain";
-
-type Key = "space" | "escape" | "alt return" | "q";
+import { Key } from "./key";
+import { get } from "./input-map";
 
 const write = (file: string | undefined, o: OutlineModel) =>
 	file && writeFile(file, to(o), noop);
@@ -53,32 +53,10 @@ const useMyInput = (handler: (key: Key) => void) => {
 			return;
 		}
 
-		// const charCodes = map(range(input.length), (i) => input.charCodeAt(i));
-
-		// TODO - extract controller
-		// const tab = () => key.ctrl && isEqual(input, "i");
-		// const shiftTab = () => key.meta && isEqual(input, "[Z");
-		// const fnBackspace = () => key.meta && isEqual(input, "[3~");
-		// const backspace = () => input.charCodeAt(0) === 127;
-		// const altLeft = () => isEqual(charCodes, [27, 91, 68]);
-		// const altRight = () => isEqual(charCodes, [27, 91, 67]);
-		// const altUp = () => isEqual(charCodes, [27, 91, 65]);
-		// const altDown = () => isEqual(charCodes, [27, 91, 66]);
-		const space = () => isEqual(input, " ");
-		// const ctrlSpace = () => isEqual(input, "`") && key.ctrl;
-		const altReturn = () => key.meta && input.charCodeAt(0) === 13;
-		// const altPoint = () => key.meta && isEqual(input, ".");
-		// const altComma = () => key.meta && isEqual(input, ",");
-		// const slash = () => isEqual(input, "/");
-
-		if (space()) {
-			handler("space");
-		} else if (key.escape) {
+		if (key.escape) {
 			handler("escape");
-		} else if (altReturn()) {
-			handler("alt return");
-		} else if (input === "q") {
-			handler("q");
+		} else {
+			handler(get({ input, key }));
 		}
 	});
 };
@@ -108,12 +86,21 @@ export const Outline = ({ file }: { file?: string }) => {
 	useMyInput(
 		(k) =>
 			o.mode === "browse" &&
-			{
-				space: () => set({ o: { ...toggleExpandCollapse()(o) } }),
-				escape: () => set({ o: home()(o) }),
-				"alt return": noop,
-				q: () => process.exit(),
-			}[k]()
+			(
+				({
+					space: () => set({ o: { ...toggleExpandCollapse()(o) } }),
+					escape: () => set({ o: home()(o) }),
+					q: () => process.exit(),
+					"ctrl space": () => set({ o: { ...toggleDeepCollapse()(o) } }),
+					"alt point": () => set({ o: { ...toggleCollapseLeft()(o) } }),
+					"alt comma": () => set({ o: { ...toggleCollapseLeft()(o) } }),
+					"fn backspace": () => set({ o: { ...deleteSubTree()(o) } }),
+					d: () => set({ o: { ...deleteSubTree()(o) } }),
+					"alt return": () => set({ o: { ...o, mode: "edit node" } }),
+					backspace: () => set({ o: { ...o, mode: "edit node" } }),
+					unrecognized: noop,
+				} as any)[k] || noop
+			)()
 	);
 
 	const [takeInput, setTakeInput] = useState(false);
@@ -134,42 +121,18 @@ export const Outline = ({ file }: { file?: string }) => {
 
 		const charCodes = map(range(input.length), (i) => input.charCodeAt(i));
 
-		// TODO - extract controller
 		const tab = () => key.ctrl && isEqual(input, "i");
-		const fnBackspace = () => key.meta && isEqual(input, "[3~");
-		const backspace = () => input.charCodeAt(0) === 127;
 		const altLeft = () => isEqual(charCodes, [27, 91, 68]);
 		const altRight = () => isEqual(charCodes, [27, 91, 67]);
 		const altUp = () => isEqual(charCodes, [27, 91, 65]);
 		const altDown = () => isEqual(charCodes, [27, 91, 66]);
-		const space = () => isEqual(input, " ");
-		const ctrlSpace = () => isEqual(input, "`") && key.ctrl;
-		const altReturn = () => key.meta && input.charCodeAt(0) === 13;
-		const altPoint = () => key.meta && isEqual(input, ".");
-		const altComma = () => key.meta && isEqual(input, ",");
 		const slash = () => isEqual(input, "/");
 
-		// console.log(input, charCodes, key);
-
-		// TODO - convert if-else to Random Access Object/Array
 		if (tab()) {
 			set({ o: { ...pipe(o)(expand(), addChild()), mode: "edit node" } });
 		} else if (o.mode === "browse") {
 			if (slash()) {
 				set({ o: { ...o, mode: "search" } });
-			} else if (ctrlSpace()) {
-				set({ o: { ...toggleDeepCollapse()(o) } });
-			} else if (
-				altPoint() ||
-				altComma() /*TODO - make it smarter than a toggle*/
-			) {
-				set({ o: { ...toggleCollapseLeft()(o) } });
-			} else if (space()) {
-				// set({ o: { ...toggleExpandCollapse()(o) } });
-			} else if (fnBackspace() || input === "d") {
-				set({ o: { ...deleteSubTree()(o) } });
-			} else if (backspace() || altReturn()) {
-				set({ o: { ...o, mode: "edit node" } });
 			} else if (isEqual(input, "v")) {
 				setView(view === "tree" ? "outline" : "tree");
 			} else if (key.escape) {
