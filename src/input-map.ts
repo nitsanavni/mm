@@ -35,6 +35,10 @@ const tuples: [From, Key][] = [
 	[{ input: "d" }, "d"],
 	[{ input: "/" }, "slash"],
 	[{ input: "`", ctrl: true }, "ctrl space"],
+	[{ codes: [27, 91, 65], meta: true }, "alt up"],
+	[{ codes: [27, 91, 66], meta: true }, "alt down"],
+	[{ codes: [27, 91, 67], meta: true }, "alt right"],
+	[{ codes: [27, 91, 68], meta: true }, "alt left"],
 ];
 
 // const altLeft = () => isEqual(charCodes, [27, 91, 68]);
