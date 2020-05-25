@@ -26,40 +26,12 @@ import {
 	Outline as OutlineModel,
 } from "./outline";
 import { OutlineLayout } from "./outline-layout.component";
-import { OutlineView } from "./outline-view-mode";
-import { PlainOutline } from "./plain-outline";
 import { from } from "./plain-from-outline";
 import { to } from "./outline-to-plain";
-import { Key } from "./key";
-import { get } from "./input-map";
+import { useKey } from "./key.hook";
 
 const write = (file: string | undefined, o: OutlineModel) =>
 	file && writeFile(file, to(o), noop);
-
-const useMyInput = (handler: (key: Key) => void) => {
-	const [takeInput, setTakeInput] = useState(false);
-
-	useEffect(() => {
-		if (!takeInput) {
-			setTakeInput(true);
-		}
-
-		return () => setTakeInput(false);
-	}, []);
-
-	// TODO - extract custom hook
-	useInput((input, key) => {
-		if (!takeInput) {
-			return;
-		}
-
-		if (key.escape) {
-			handler("escape");
-		} else {
-			handler(get({ input, key }));
-		}
-	});
-};
 
 export const Outline = ({ file }: { file?: string }) => {
 	const [{ o }, set] = useState(() => {
@@ -80,15 +52,17 @@ export const Outline = ({ file }: { file?: string }) => {
 
 	write(file, o);
 
-	const [view, setView] = useState<OutlineView>("tree");
-	// TODO - need more state - in order to do "back" action while navigating
-
-	useMyInput(
-		(k) =>
+	useKey(
+		(key) =>
 			o.mode === "browse" &&
 			(
 				({
+					up: () => set({ o: { ...previousSiblin()(o) } }),
+					down: () => set({ o: { ...nextSiblin()(o) } }),
+					left: () => set({ o: { ...goToParent()(o) } }),
+					right: () => set({ o: { ...pipe(o)(expand(), child()) } }),
 					space: () => set({ o: { ...toggleExpandCollapse()(o) } }),
+					return: () => set({ o: { ...addSiblin()(o), mode: "edit node" } }),
 					escape: () => set({ o: home()(o) }),
 					q: () => process.exit(),
 					"ctrl space": () => set({ o: { ...toggleDeepCollapse()(o) } }),
@@ -99,7 +73,7 @@ export const Outline = ({ file }: { file?: string }) => {
 					"alt return": () => set({ o: { ...o, mode: "edit node" } }),
 					backspace: () => set({ o: { ...o, mode: "edit node" } }),
 					unrecognized: noop,
-				} as any)[k] || noop
+				} as any)[key] || noop
 			)()
 	);
 
@@ -126,28 +100,11 @@ export const Outline = ({ file }: { file?: string }) => {
 		const altRight = () => isEqual(charCodes, [27, 91, 67]);
 		const altUp = () => isEqual(charCodes, [27, 91, 65]);
 		const altDown = () => isEqual(charCodes, [27, 91, 66]);
-		const slash = () => isEqual(input, "/");
 
 		if (tab()) {
 			set({ o: { ...pipe(o)(expand(), addChild()), mode: "edit node" } });
 		} else if (o.mode === "browse") {
-			if (slash()) {
-				set({ o: { ...o, mode: "search" } });
-			} else if (isEqual(input, "v")) {
-				setView(view === "tree" ? "outline" : "tree");
-			} else if (key.escape) {
-				// set({ o: home()(o) });
-			} else if (key.downArrow) {
-				set({ o: { ...nextSiblin()(o) } });
-			} else if (key.upArrow) {
-				set({ o: { ...previousSiblin()(o) } });
-			} else if (key.leftArrow) {
-				set({ o: { ...goToParent()(o) } });
-			} else if (key.rightArrow) {
-				set({ o: { ...pipe(o)(expand(), child()) } });
-			} else if (key.return) {
-				set({ o: { ...addSiblin()(o), mode: "edit node" } });
-			} else if (altLeft()) {
+			if (altLeft()) {
 				set({ o: { ...moveLeft()(o) } });
 			} else if (altRight()) {
 				set({ o: { ...moveRight()(o) } });
@@ -165,7 +122,7 @@ export const Outline = ({ file }: { file?: string }) => {
 		// console.log(key, input, charCodes);
 	});
 
-	return view === "tree" ? (
+	return (
 		<OutlineLayout
 			n={o.visibleRoot}
 			onChange={(value) =>
@@ -177,7 +134,5 @@ export const Outline = ({ file }: { file?: string }) => {
 			mode={o.mode}
 			prefix={""}
 		/>
-	) : (
-		<PlainOutline n={o.root} />
 	);
 };

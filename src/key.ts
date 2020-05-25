@@ -1,6 +1,11 @@
 export type Key =
 	| "unrecognized"
+	| "up"
+	| "down"
+	| "left"
+	| "right"
 	| "space"
+	| "return"
 	| "escape"
 	| "alt return"
 	| "q"
