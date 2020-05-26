@@ -14,11 +14,7 @@ type Hash = string;
 const codes = (input: string) =>
 	_map(range(input.length), (i) => input.charCodeAt(i));
 const hash: (from: From) => Hash = (f) =>
-	inspect([
-		...(f.codes || (f.input && codes(f.input)) || []),
-		!!f.ctrl,
-		!!f.meta,
-	]);
+	inspect([...(f.codes || (f.input && codes(f.input))!), !!f.ctrl, !!f.meta]);
 
 const tuples: [From, Key][] = [
 	[{ input: " " }, "space"],

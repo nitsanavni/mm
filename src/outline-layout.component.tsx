@@ -8,7 +8,7 @@ import { OutlineNode, Mode, childrenArray } from "./outline";
 
 const meta = chalk.dim.yellow;
 const focus = chalk.yellowBright.bold.underline;
-const label = (n: OutlineNode) => (isEmpty(n.label) ? meta("·") : n.label);
+const label = (n: OutlineNode) => (isEmpty(n.label) ? "·" : n.label);
 const style = (n: OutlineNode) => (n.focused ? focus(label(n)) : label(n));
 const collapse = meta("+");
 const siblinPrefix = (s: OutlineNode) => {

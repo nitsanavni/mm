@@ -14,11 +14,17 @@ import { from } from "./plain-from-outline";
 import { to } from "./outline-to-plain";
 import { useKey } from "./key.hook";
 import { map } from "./key-map";
+import { Provide } from "./types";
+import { Key } from "./key";
 
 const write = (file: string | undefined, o: OutlineModel) =>
 	file && writeFile(file, to(o), noop);
 
-export const Outline = ({ file }: { file?: string }) => {
+export const makeOutline = (provideKey: Provide<Key>) => ({
+	file,
+}: {
+	file?: string;
+}) => {
 	const [{ o }, set] = useState(() => {
 		let outline = init();
 
@@ -37,8 +43,7 @@ export const Outline = ({ file }: { file?: string }) => {
 
 	write(file, o);
 
-	// TODO - change to `onKey`, makeComponent = (onKey) => (props) => etc.
-	useKey((key) => {
+	provideKey((key) => {
 		const action = map[o.mode]?.[key];
 
 		if (!action) {
@@ -53,12 +58,14 @@ export const Outline = ({ file }: { file?: string }) => {
 			return;
 		}
 
+		// TODO - transforms of the outline should be immutable
 		set({ o: { ...pipe(o)(...(t || [])), mode: mode || o.mode } });
 	});
 
 	return (
 		<OutlineLayout
 			n={o.visibleRoot}
+			// TODO - inject this onChange handler for easier testing
 			onChange={(value) =>
 				!value.includes("\t") &&
 				!value.includes("[Z") &&
@@ -70,3 +77,5 @@ export const Outline = ({ file }: { file?: string }) => {
 		/>
 	);
 };
+
+export const Outline = makeOutline(useKey);
