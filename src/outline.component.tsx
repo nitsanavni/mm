@@ -47,7 +47,7 @@ export const makeOutline = (provideKey: Provide<Key>) => ({
 		const action = map[o.mode]?.[key];
 
 		if (!action) {
-			return;
+			return o.mode;
 		}
 
 		const { fn, t, mode } = action;
@@ -55,26 +55,31 @@ export const makeOutline = (provideKey: Provide<Key>) => ({
 		if (fn) {
 			fn();
 
-			return;
+			return action;
 		}
 
 		// TODO - transforms of the outline should be immutable
 		set({ o: { ...pipe(o)(...(t || [])), mode: mode || o.mode } });
+
+		return o.mode;
 	});
 
 	return (
-		<OutlineLayout
-			n={o.visibleRoot}
-			// TODO - inject this onChange handler for easier testing
-			onChange={(value) =>
-				!value.includes("\t") &&
-				!value.includes("[Z") &&
-				!value.includes(String.fromCharCode(27)) &&
-				set({ ...{ o }, ...{ o: edit(value)(o) } })
-			}
-			mode={o.mode}
-			prefix={""}
-		/>
+		<>
+			{/* {o.mode} */}
+			<OutlineLayout
+				n={o.visibleRoot}
+				// TODO - inject this onChange handler for easier testing
+				onChange={(value) =>
+					!value.includes("\t") &&
+					!value.includes("[Z") &&
+					!value.includes(String.fromCharCode(27)) &&
+					set({ ...{ o }, ...{ o: edit(value)(o) } })
+				}
+				mode={o.mode}
+				prefix={""}
+			/>
+		</>
 	);
 };
 

@@ -3,48 +3,55 @@ import test from "ava";
 import { render } from "ink-testing-library";
 import stripAnsi from "strip-ansi";
 import chalk from "chalk";
-import { trimEnd, noop } from "lodash";
 
-import { Outline, makeOutline } from "../src/outline.component";
+import { helper } from "./outline-test-helper";
+import { Outline } from "../src/outline.component";
 import { rturn } from "./keys";
 import { cursor } from "./cursor";
 import { tick } from "./tick";
+import { Action } from "../src/key-map";
 import { Key } from "../src/key";
-import { CB } from "../src/types";
+import { sleep } from "./sleep";
 
-test("inject `onKey`", (t) => {
-	let next: CB<Key> = noop;
-	const Component = makeOutline((cb) => (next = cb));
+test("inject `onKey`", async (t) => {
+	const { next, write, is } = helper(t);
+	const r = String.raw;
 
-	const { lastFrame, stdin } = render(<Component />);
-
-	const is = (...lines: string[]) =>
-		t.is(trimEnd(stripAnsi(lastFrame())), lines.join("\n"));
-
-	is("");
-
-	stdin.write("hello"); // edit node text
+	is(" ");
+	write("hello"); // edit node text
+	is("hello ");
 	next("tab"); // add child node
-	stdin.write("world");
+	is("hello- ");
+	write("world");
+	is("hello-world ");
 	next("return"); // stop editing node
+	await sleep(10);
+	is("hello-world");
+	await sleep(10);
 	next("return"); // add sibling node
-	stdin.write("A");
+	next("return"); // add sibling node
+	await sleep(10);
+	write("A");
+	is(
+		//
+		r`     /world`,
+		r`hello\A `
+	);
+	// next("return");
 	next("return");
-	next("return");
-	stdin.write("B");
-	next("return");
+
+	write("B");
+	// next("return");
 	next("alt up"); // move node up, move B above A
 	next("tab"); // add children to B
-	stdin.write("1");
+	write("1");
+	// next("return");
 	next("return");
+	write("2");
+	// next("return");
 	next("return");
-	stdin.write("2");
+	write("3");
 	next("return");
-	next("return");
-	stdin.write("3");
-	next("return");
-
-	const r = String.raw;
 
 	is(
 		r`     /world`,

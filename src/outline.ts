@@ -38,7 +38,6 @@ const changeFocusTo = (n?: OutlineNode) => (o: Outline) => {
 	o.focus.focused = false;
 	o.focus = n;
 	o.focus.focused = true;
-	o.mode = "browse";
 
 	return o;
 };

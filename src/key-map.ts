@@ -20,7 +20,7 @@ import {
 } from "./outline";
 import { Key } from "./key";
 
-type Action = {
+export type Action = {
 	fn?: () => void;
 	t?: Transform[];
 	mode?: Mode;
