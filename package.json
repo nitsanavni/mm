@@ -49,6 +49,7 @@
 	"dependencies": {
 		"arrify": "^2.0.1",
 		"chalk": "^4.0.0",
+		"immer": "^6.0.9",
 		"ink": "^2.7.1",
 		"ink-text-input": "^3.2.2",
 		"lodash": "^4.17.15",
