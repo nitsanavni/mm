@@ -1,5 +1,7 @@
 mindmap for the cli
 
+![](https://raw.githubusercontent.com/nitsanavni/mm/master/demo.gif)
+
 **note: this is still in initial stages of development, data may be lost, I recommend backing up your files**
 
 # install
