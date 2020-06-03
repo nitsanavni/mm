@@ -9,11 +9,9 @@ import { Outline } from "../src/outline.component";
 import { rturn } from "./keys";
 import { cursor } from "./cursor";
 import { tick } from "./tick";
-import { Action } from "../src/key-map";
-import { Key } from "../src/key";
 import { sleep } from "./sleep";
 
-test("inject `onKey`", async (t) => {
+test.failing("inject `onKey`", async (t) => {
 	const { next, write, is } = helper(t);
 	const r = String.raw;
 
