@@ -17,7 +17,7 @@ test("null layout", (t) => {
 		/>
 	);
 
-	t.is(stripAnsi(lastFrame()), "·");
+	t.is(stripAnsi(lastFrame()!), "·");
 });
 
 test.failing("`edit node` mode", (t) => {

@@ -15,7 +15,7 @@ test("move up", (t) => {
 	);
 
 	t.is(
-		stripAnsi(lastFrame()),
+		stripAnsi(lastFrame()!),
 		`    /A - first
 list·B - second
     \\C - third`

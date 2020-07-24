@@ -12,7 +12,7 @@ import { tick } from "./tick";
 test.failing("edit the root", async (t) => {
 	const { lastFrame, stdin } = render(<Outline />);
 
-	const plainLastFrame = () => stripAnsi(lastFrame());
+	const plainLastFrame = () => stripAnsi(lastFrame()!);
 
 	t.is(lastFrame(), chalk.bold(cursor));
 
@@ -28,7 +28,7 @@ test.failing("edit the root", async (t) => {
 test.failing("add first child - hit return", async (t) => {
 	const { lastFrame, stdin } = render(<Outline />);
 
-	const plainLastFrame = () => stripAnsi(lastFrame());
+	const plainLastFrame = () => stripAnsi(lastFrame()!);
 
 	stdin.write("root");
 	stdin.write(rturn); // exit edit mode
