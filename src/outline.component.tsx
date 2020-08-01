@@ -135,7 +135,7 @@ export const Outline = ({ file }: { file?: string }) => {
 		const charCodes = map(range(input.length), (i) => input.charCodeAt(i));
 
 		// TODO - extract controller
-		const tab = () => key.ctrl && isEqual(input, "i");
+		const tab = () => key.tab;
 		const fnBackspace = () => key.meta && isEqual(input, "[3~");
 		const backspace = () => input.charCodeAt(0) === 127;
 		const altLeft = () => isEqual(charCodes, [27, 91, 68]);

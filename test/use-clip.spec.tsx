@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { Text } from "ink";
 import test from "ava";
 import { render } from "ink-testing-library";
 import { times, sample } from "lodash";
@@ -97,7 +98,7 @@ test("useTimeout", (t) => {
 			currentFrame
 		);
 
-		return <>{frames[currentFrame]}</>;
+		return <Text>{frames[currentFrame]}</Text>;
 	};
 
 	const { lastFrame } = render(<PlayerSkeleton />);
@@ -124,7 +125,7 @@ test("setTimeout", (t) => {
 		return s;
 	};
 
-	const TimeoutComponent = () => <>{useTimeout()}</>;
+	const TimeoutComponent = () => <Text>{useTimeout()}</Text>;
 
 	const { lastFrame } = render(<TimeoutComponent />);
 
@@ -155,7 +156,7 @@ test.failing("useTimer", (t) => {
 
 		useTimer(() => set(s + 1), 70);
 
-		return <>{s}</>;
+		return <Text>{s}</Text>;
 	};
 
 	const { lastFrame } = render(<TimerUser />);

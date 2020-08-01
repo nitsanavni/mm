@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Color } from "ink";
+import { Box, Text } from "ink";
 import InkTextInput from "ink-text-input";
 import { isEmpty, map } from "lodash";
 import chalk from "chalk";
@@ -31,36 +31,35 @@ type Props = {
 };
 
 const Node = ({ n, onChange, mode, prefix = "" }: Props) => (
-	<>
+	<Text>
 		{n.collapsedLeft ? collapse : prefix}
 		{n.focused && mode === "edit node" ? (
-			<Color yellow={true} bold={true}>
+			<Text color={"yellow"} bold={true}>
 				<InkTextInput onChange={onChange} value={n.label} />
-			</Color>
+			</Text>
 		) : (
 			style(n)
 		)}
-	</>
+	</Text>
 );
 
-const NodeChildren = ({ n, onChange, mode }: Props) => (
-	<div>
-		{n.collapsed
-			? collapse
-			: n.firstChild && (
-					<>
-						{map(childrenArray(n), (c) => (
-							<OutlineLayout
-								key={`ll+${c.key}`}
-								n={c}
-								{...{ onChange, mode }}
-								prefix={siblinPrefix(c)}
-							/>
-						))}
-					</>
-			  )}
-	</div>
-);
+const NodeChildren = ({ n, onChange, mode }: Props) =>
+	n.collapsed ? (
+		<Text>{collapse}</Text>
+	) : n.firstChild ? (
+		<Box flexDirection="column">
+			{map(childrenArray(n), (c) => (
+				<OutlineLayout
+					key={`ll+${c.key}`}
+					n={c}
+					{...{ onChange, mode }}
+					prefix={siblinPrefix(c)}
+				/>
+			))}
+		</Box>
+	) : (
+		<></>
+	);
 
 export const OutlineLayout = (props: Props) => (
 	<Box flexDirection="row" key={`box ${props.n.key}`} alignItems="center">
