@@ -1,0 +1,17 @@
+image:
+  file: .gitpod.Dockerfile
+
+# List the start up tasks. You can start them in parallel in multiple terminals. See https://www.gitpod.io/docs/config-start-tasks/
+tasks:
+  - init: |
+      npm i
+      npx tsc
+    command: |
+      git config --global include.path ~/dotfiles/.gitconfig
+      zsh
+      source /home/linuxbrew/.linuxbrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+vscode:
+  extensions:
+    - mikestead.dotenv
+    - esbenp.prettier-vscode
