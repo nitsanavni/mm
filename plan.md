@@ -1,5 +1,15 @@
 # 0k
 
+- fix keys for gitpod embedded terminal
+
+# S/M
+
+- performance
+- from stdin
+- draw the curves
+
+# in
+
 - cut-n-paste
 - collapse left!
   - disappear ancestors
@@ -27,16 +37,6 @@
 - mm model
   - extract commonalities with outline
   - auto-layout mode
-  -
-
-# S/M
-
-- performance
-- from stdin
-- draw the curves
-
-# in
-
 - read about ink Static
 - does re-render preserve state?
 - wrap text by default?

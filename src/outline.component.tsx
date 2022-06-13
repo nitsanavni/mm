@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { map, range, isEqual, noop } from "lodash";
-import { useInput } from "ink";
+import { useInput, Text } from "ink";
 import { readFileSync, writeFile } from "fs";
+import { inspect } from "util";
 
 import {
 	init,
@@ -100,6 +101,8 @@ export const Outline = ({ file }: { file?: string }) => {
 		return { o: outline };
 	});
 
+	const [key, setKey] = useState("");
+
 	write(file, o);
 
 	const [view, setView] = useState<OutlineView>("tree");
@@ -134,19 +137,22 @@ export const Outline = ({ file }: { file?: string }) => {
 
 		const charCodes = map(range(input.length), (i) => input.charCodeAt(i));
 
+		setKey(input + ":" + inspect(charCodes) + ":" + inspect(key));
+
 		// TODO - extract controller
 		const tab = () => key.tab;
 		const fnBackspace = () => key.meta && isEqual(input, "[3~");
 		const backspace = () => input.charCodeAt(0) === 127;
-		const altLeft = () => isEqual(charCodes, [27, 91, 68]);
-		const altRight = () => isEqual(charCodes, [27, 91, 67]);
-		const altUp = () => isEqual(charCodes, [27, 91, 65]);
-		const altDown = () => isEqual(charCodes, [27, 91, 66]);
+		const altLeft = () => key.meta && isEqual(input, "b");
+		const altRight = () => key.meta && isEqual(input, "f");
+		const altUp = () => key.meta && isEqual(input, "[1;3A");
+		const altDown = () => key.meta && isEqual(input, "[1;3B");
 		const space = () => isEqual(input, " ");
 		const ctrlSpace = () => isEqual(input, "`") && key.ctrl;
 		const altReturn = () => key.meta && input.charCodeAt(0) === 13;
 		const altPoint = () => key.meta && isEqual(input, ".");
 		const altComma = () => key.meta && isEqual(input, ",");
+		const altSpace = () => isEqual(charCodes, [160]);
 		const slash = () => isEqual(input, "/");
 
 		// console.log(input, charCodes, key);
@@ -160,6 +166,7 @@ export const Outline = ({ file }: { file?: string }) => {
 			} else if (ctrlSpace()) {
 				set({ o: { ...toggleDeepCollapse()(o) } });
 			} else if (
+				altSpace() ||
 				altPoint() ||
 				altComma() /*TODO - make it smarter than a toggle*/
 			) {
@@ -203,17 +210,20 @@ export const Outline = ({ file }: { file?: string }) => {
 	});
 
 	return view === "tree" ? (
-		<OutlineLayout
-			n={o.visibleRoot}
-			onChange={(value) =>
-				!value.includes("\t") &&
-				!value.includes("[Z") &&
-				!value.includes(String.fromCharCode(27)) &&
-				set({ ...{ o }, ...{ o: edit(value)(o) } })
-			}
-			mode={o.mode}
-			prefix={""}
-		/>
+		<>
+			{/* <Text>{key}</Text> */}
+			<OutlineLayout
+				n={o.visibleRoot}
+				onChange={(value) =>
+					!value.includes("\t") &&
+					!value.includes("[Z") &&
+					!value.includes(String.fromCharCode(27)) &&
+					set({ ...{ o }, ...{ o: edit(value)(o) } })
+				}
+				mode={o.mode}
+				prefix={""}
+			/>
+		</>
 	) : (
 		<PlainOutline n={o.root} />
 	);
